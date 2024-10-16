@@ -5,39 +5,22 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.yun</groupId>
-        <artifactId>oj</artifactId>
+        <artifactId>oj-common</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>oj-modules</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>oj-system</module>
-        <module>oj-job</module>
-        <module>oj-judge</module>
-        <module>oj-friend</module>
-    </modules>
+    <artifactId>oj-common-security</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
         <dependency>
             <groupId>com.yun</groupId>
             <artifactId>oj-common-core</artifactId>
             <version>${oj-common-core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.yun</groupId>
-            <artifactId>oj-common-swagger</artifactId>
-            <version>${oj-common-swagger.version}</version>
         </dependency>
     </dependencies>
 </project>
