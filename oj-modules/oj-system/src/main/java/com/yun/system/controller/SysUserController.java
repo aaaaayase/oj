@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/sysUser")
 public class SysUserController {
 
+    @Autowired
     private ISysUserService sysUserService;
 
     @Operation(summary = "管理员登录", description = "根据账号以及密码来进行登录")
@@ -31,7 +33,7 @@ public class SysUserController {
     @ApiResponse(responseCode = "3102", description = "用户不存在")
     @ApiResponse(responseCode = "3103", description = "用户名或密码错误")
     @PostMapping("/login")
-    public R<Void> login(@RequestBody LoginDTO loginDTO) {
+    public R<String> login(@RequestBody LoginDTO loginDTO) {
 
         return sysUserService.login(loginDTO.getUserAccount(), loginDTO.getPassword());
     }

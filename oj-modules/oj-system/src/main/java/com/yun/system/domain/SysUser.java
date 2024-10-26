@@ -21,7 +21,7 @@ import java.util.PrimitiveIterator;
 @AllArgsConstructor
 @TableName("tb_sys_user")
 public class SysUser extends BaseEntity { 
-    @TableId(type = IdType.ASSIGN_ID)
+    @TableId(value = "USER_ID", type = IdType.ASSIGN_ID)
     private Long userId;
     private String userAccount;
     private String password;

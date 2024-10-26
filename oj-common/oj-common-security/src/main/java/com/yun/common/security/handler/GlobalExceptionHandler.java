@@ -1,4 +1,4 @@
-package com.yun.common.security;
+package com.yun.common.security.handler;
 
 import com.yun.common.core.domain.R;
 import com.yun.common.core.enums.ResultCode;
@@ -17,8 +17,7 @@ public class GlobalExceptionHandler {
      * 请求方法不支持
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public R<?>
-    handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
+    public R<?>handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         // log.error("请求地址'{}',不⽀持'{}'请求", requestURI, e.getMethod());
         return R.fail(ResultCode.ERROR);

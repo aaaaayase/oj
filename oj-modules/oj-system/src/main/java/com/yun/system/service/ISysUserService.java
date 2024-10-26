@@ -16,5 +16,5 @@ public interface ISysUserService {
      * @param password
      * @return
      */
-    R<Void> login(String userAccount, String password);
+    R<String> login(String userAccount, String password);
 }
