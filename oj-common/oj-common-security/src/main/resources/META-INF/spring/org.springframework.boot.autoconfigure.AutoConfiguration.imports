@@ -1,4 +1,6 @@
 com.yun.common.security.handler.GlobalExceptionHandler
 com.yun.common.security.service.TokenService
+com.yun.common.security.config.WebMvcConfig
+com.yun.common.security.interceptor.TokenInterceptor
 
 #这种配置文件感觉就是为了让指定的类被spring读取到

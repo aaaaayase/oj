@@ -8,6 +8,7 @@ package com.yun.common.core.constants;
 public class CacheConstants {
     public static final String LOGIN_TOKEN_KEY = "logintoken:";
 
-    public static final long EXP = 700;
+    public static final long EXP = 720;
 
+    public static final long REFRESH_TIME = 30;
 }

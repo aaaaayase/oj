@@ -30,6 +30,10 @@ public class R<T> {
         return assembleResult(null, ResultCode.FAILED);
     }
 
+    public static R<?> fail(int code, String msg) {
+        return assembleResult(null, msg, code);
+    }
+
     /**
      * 指定错误码
      *
@@ -59,4 +63,12 @@ public class R<T> {
         return r;
     }
 
+    public static <T> R<T> assembleResult(T data, String msg, int code) {
+        R<T> r = new R<>();
+        r.setCode(code);
+        r.setData(data);
+        r.setMsg(msg);
+
+        return r;
+    }
 }

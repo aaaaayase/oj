@@ -27,8 +27,7 @@ public class GlobalExceptionHandler {
      * 拦截运行时异常
      */
     @ExceptionHandler(RuntimeException.class)
-    public R<?> handleRuntimeException(RuntimeException e, HttpServletRequest
-            request) {
+    public R<?> handleRuntimeException(RuntimeException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         // log.error("请求地址'{}',发⽣异常.", requestURI, e);
         return R.fail(ResultCode.ERROR);
@@ -43,4 +42,6 @@ public class GlobalExceptionHandler {
         // log.error("请求地址'{}',发⽣异常.", requestURI, e);
         return R.fail(ResultCode.ERROR);
     }
+
+
 }

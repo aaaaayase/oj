@@ -34,7 +34,6 @@ public class SysUserController {
     @ApiResponse(responseCode = "3103", description = "用户名或密码错误")
     @PostMapping("/login")
     public R<String> login(@RequestBody LoginDTO loginDTO) {
-
         return sysUserService.login(loginDTO.getUserAccount(), loginDTO.getPassword());
     }
 
@@ -44,7 +43,7 @@ public class SysUserController {
     @ApiResponse(responseCode = "2000", description = "服务繁忙请稍后重试")
     @ApiResponse(responseCode = "3101", description = "⽤⼾已存在")
     public R<Void> add(@RequestBody SysUserSaveDTO saveDTO) {
-        return null;
+        return R.assembleResult(null,"gogogo",1);
     }
 
     @DeleteMapping("/{userId}")

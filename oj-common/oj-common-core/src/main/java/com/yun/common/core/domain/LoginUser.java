@@ -1,4 +1,4 @@
-package com.yun.common.security.domain;
+package com.yun.common.core.domain;
 
 import lombok.Getter;
 import lombok.Setter;
