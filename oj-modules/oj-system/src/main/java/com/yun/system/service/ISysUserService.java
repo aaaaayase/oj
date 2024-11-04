@@ -1,6 +1,7 @@
 package com.yun.system.service;
 
 import com.yun.common.core.domain.R;
+import com.yun.system.domain.dto.SysUserSaveDTO;
 
 /**
  * @author yun
@@ -17,4 +18,13 @@ public interface ISysUserService {
      * @return
      */
     R<String> login(String userAccount, String password);
+
+    /**
+     * 增加管理员
+     *
+     * @param saveDTO
+     * @return
+     */
+    int add(SysUserSaveDTO saveDTO);
+
 }

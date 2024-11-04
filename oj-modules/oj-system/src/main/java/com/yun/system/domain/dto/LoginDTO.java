@@ -1,4 +1,4 @@
-package com.yun.system.domain;
+package com.yun.system.domain.dto;
 
 import lombok.Data;
 

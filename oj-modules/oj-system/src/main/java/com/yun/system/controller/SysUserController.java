@@ -1,9 +1,10 @@
 package com.yun.system.controller;
 
+import com.yun.common.core.controller.BaseController;
 import com.yun.common.core.domain.R;
-import com.yun.system.domain.LoginDTO;
-import com.yun.system.domain.SysUserSaveDTO;
-import com.yun.system.domain.SysUserVO;
+import com.yun.system.domain.dto.LoginDTO;
+import com.yun.system.domain.dto.SysUserSaveDTO;
+import com.yun.system.domain.vo.SysUserVO;
 import com.yun.system.service.ISysUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -22,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "管理员相关接口")
 @RestController
 @RequestMapping("/sysUser")
-public class SysUserController {
+public class SysUserController extends BaseController {
 
     @Autowired
     private ISysUserService sysUserService;
@@ -43,7 +45,7 @@ public class SysUserController {
     @ApiResponse(responseCode = "2000", description = "服务繁忙请稍后重试")
     @ApiResponse(responseCode = "3101", description = "⽤⼾已存在")
     public R<Void> add(@RequestBody SysUserSaveDTO saveDTO) {
-        return R.assembleResult(null,"gogogo",1);
+        return toR(sysUserService.add(saveDTO));
     }
 
     @DeleteMapping("/{userId}")
