@@ -1,8 +1,12 @@
 package com.yun.system.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.yun.common.core.constants.HttpConstants;
+import com.yun.common.core.domain.LoginUser;
 import com.yun.common.core.domain.R;
+import com.yun.common.core.domain.vo.LoginUserVO;
 import com.yun.common.core.enums.ResultCode;
 import com.yun.common.core.enums.UserIdentity;
 import com.yun.common.security.exception.ServiceException;
@@ -41,7 +45,7 @@ public class SysUserService implements ISysUserService {
     public R<String> login(String userAccount, String password) {
         // 1.通过账号去查询数据库中的信息
         LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
-        SysUser sysUser = sysUserMapper.selectOne(queryWrapper.select(SysUser::getUserId, SysUser::getPassword).eq(SysUser::getUserAccount, userAccount));
+        SysUser sysUser = sysUserMapper.selectOne(queryWrapper.select(SysUser::getUserId, SysUser::getPassword, SysUser::getNickName).eq(SysUser::getUserAccount, userAccount));
         R loginResult = new R();
         if (sysUser == null) {
 //            loginResult.setMsg(ResultCode.FAILED_USER_NOT_EXISTS.getMsg());
@@ -54,7 +58,7 @@ public class SysUserService implements ISysUserService {
 //            loginResult.setCode(ResultCode.SUCCESS.getCode());
 //            loginResult.setMsg(ResultCode.SUCCESS.getMsg());
 
-            return R.ok(tokenService.createToken(sysUser.getUserId(), secret, UserIdentity.ADMIN.getValue()));
+            return R.ok(tokenService.createToken(sysUser.getUserId(), secret, UserIdentity.ADMIN.getValue(), sysUser.getNickName()));
         }
 
 //        loginResult.setMsg(ResultCode.FAILED_LOGIN.getMsg());
@@ -77,5 +81,20 @@ public class SysUserService implements ISysUserService {
         sysUser.setUserAccount(saveDTO.getUserAccount());
         sysUser.setPassword(BCryptUtils.encryptPassword(saveDTO.getPassword()));
         return sysUserMapper.insert(sysUser);
+    }
+
+    @Override
+    public R<LoginUserVO> info(String token) {
+        if (StrUtil.isNotEmpty(token) && token.startsWith(HttpConstants.PREFIX)) {
+            token = token.replaceFirst(HttpConstants.PREFIX, StrUtil.EMPTY);
+        }
+        LoginUser loginUser = tokenService.getLoginUser(token, secret);
+        if (loginUser == null) {
+            return R.fail();
+        }
+        LoginUserVO loginUserVO = new LoginUserVO();
+        loginUserVO.setNickName(loginUser.getNickName());
+
+        return R.ok(loginUserVO);
     }
 }

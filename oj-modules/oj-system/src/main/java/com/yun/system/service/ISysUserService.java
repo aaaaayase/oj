@@ -1,6 +1,7 @@
 package com.yun.system.service;
 
 import com.yun.common.core.domain.R;
+import com.yun.common.core.domain.vo.LoginUserVO;
 import com.yun.system.domain.dto.SysUserSaveDTO;
 
 /**
@@ -27,4 +28,5 @@ public interface ISysUserService {
      */
     int add(SysUserSaveDTO saveDTO);
 
+    R<LoginUserVO> info(String token);
 }

@@ -11,6 +11,7 @@ import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -66,7 +67,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BindException.class)
-    public R<Void> handleBindException(BindException e) {
+    public R<?> handleBindException(BindException e) {
         log.error(e.getMessage());
         String message = join(e.getAllErrors(),
                 DefaultMessageSourceResolvable::getDefaultMessage, ", ");
