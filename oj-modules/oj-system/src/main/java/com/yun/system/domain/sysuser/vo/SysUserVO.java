@@ -1,4 +1,4 @@
-package com.yun.system.domain.vo;
+package com.yun.system.domain.sysuser.vo;
 
 import lombok.Data;
 

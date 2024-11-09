@@ -1,13 +1,13 @@
-package com.yun.system.controller;
+package com.yun.system.controller.sysuser;
 
 import com.yun.common.core.constants.HttpConstants;
 import com.yun.common.core.controller.BaseController;
 import com.yun.common.core.domain.R;
 import com.yun.common.core.domain.vo.LoginUserVO;
-import com.yun.system.domain.dto.LoginDTO;
-import com.yun.system.domain.dto.SysUserSaveDTO;
-import com.yun.system.domain.vo.SysUserVO;
-import com.yun.system.service.ISysUserService;
+import com.yun.system.domain.sysuser.dto.LoginDTO;
+import com.yun.system.domain.sysuser.dto.SysUserSaveDTO;
+import com.yun.system.domain.sysuser.vo.SysUserVO;
+import com.yun.system.service.sysuser.ISysUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -41,11 +40,18 @@ public class SysUserController extends BaseController {
         return sysUserService.login(loginDTO.getUserAccount(), loginDTO.getPassword());
     }
 
+    @DeleteMapping("/logout")
+    @Operation(summary = "管理员注销登录", description = "退出登录")
+    @ApiResponse(responseCode = "1000", description = "操作成功")
+    @ApiResponse(responseCode = "2000", description = "服务器繁忙请稍后重试")
+    @ApiResponse(responseCode = "3001", description = "登录状态已过期")
+    public R<Void> logout(@RequestHeader(HttpConstants.AUTHENTICATION) String token) {
+        return toR(sysUserService.logout(token));
+    }
+
     @Operation(summary = "获取管理员信息", description = "获取登录者的信息交给前端")
     @ApiResponse(responseCode = "1000", description = "操作成功")
     @ApiResponse(responseCode = "2000", description = "服务器繁忙请稍后重试")
-    @ApiResponse(responseCode = "3102", description = "用户不存在")
-    @ApiResponse(responseCode = "3103", description = "用户名或密码错误")
     @GetMapping("/info")
     public R<LoginUserVO> info(@RequestHeader(HttpConstants.AUTHENTICATION) String token) {
         return sysUserService.info(token);

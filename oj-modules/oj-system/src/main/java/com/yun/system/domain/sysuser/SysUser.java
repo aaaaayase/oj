@@ -1,4 +1,4 @@
-package com.yun.system.domain;
+package com.yun.system.domain.sysuser;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

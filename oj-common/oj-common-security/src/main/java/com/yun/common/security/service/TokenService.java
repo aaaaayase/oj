@@ -78,12 +78,22 @@ public class TokenService {
         }
     }
 
+    // 获取redis中对象
     public LoginUser getLoginUser(String token, String secret) {
         String userKey = getUserKey(token, secret);
         if (userKey == null) {
             return null;
         }
         return redisService.getCacheObject(getTokenKey(userKey), LoginUser.class);
+    }
+
+    // 删除redis中对象
+    public boolean deleteLoginUser(String token, String secret) {
+        String userKey = getUserKey(token, secret);
+        if (userKey == null) {
+            return false;
+        }
+        return redisService.deleteObject(getTokenKey(userKey));
     }
 
     private String getUserKey(String token, String secret) {
@@ -104,5 +114,6 @@ public class TokenService {
     private String getTokenKey(String userKey) {
         return CacheConstants.LOGIN_TOKEN_KEY + userKey;
     }
+
 
 }

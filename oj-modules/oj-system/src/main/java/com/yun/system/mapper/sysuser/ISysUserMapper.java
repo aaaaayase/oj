@@ -1,7 +1,7 @@
-package com.yun.system.mapper;
+package com.yun.system.mapper.sysuser;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.yun.system.domain.SysUser;
+import com.yun.system.domain.sysuser.SysUser;
 
 /**
  * @author yun

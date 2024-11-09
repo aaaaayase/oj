@@ -53,7 +53,7 @@ public class R<T> {
      * @param <T>
      * @return
      */
-    public static <T> R<T> assembleResult(T data, ResultCode resultCode) {
+    private static <T> R<T> assembleResult(T data, ResultCode resultCode) {
         R<T> r = new R<>();
 
         r.setCode(resultCode.getCode());
@@ -63,7 +63,7 @@ public class R<T> {
         return r;
     }
 
-    public static <T> R<T> assembleResult(T data, String msg, int code) {
+    private static <T> R<T> assembleResult(T data, String msg, int code) {
         R<T> r = new R<>();
         r.setCode(code);
         r.setData(data);

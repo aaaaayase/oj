@@ -1,4 +1,4 @@
-package com.yun.system.service.impl;
+package com.yun.system.service.sysuser.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
@@ -11,10 +11,10 @@ import com.yun.common.core.enums.ResultCode;
 import com.yun.common.core.enums.UserIdentity;
 import com.yun.common.security.exception.ServiceException;
 import com.yun.common.security.service.TokenService;
-import com.yun.system.domain.SysUser;
-import com.yun.system.domain.dto.SysUserSaveDTO;
-import com.yun.system.mapper.ISysUserMapper;
-import com.yun.system.service.ISysUserService;
+import com.yun.system.domain.sysuser.SysUser;
+import com.yun.system.domain.sysuser.dto.SysUserSaveDTO;
+import com.yun.system.mapper.sysuser.ISysUserMapper;
+import com.yun.system.service.sysuser.ISysUserService;
 import com.yun.system.utils.BCryptUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +30,7 @@ import java.util.List;
  */
 @Service
 @RefreshScope
-public class SysUserService implements ISysUserService {
+public class SysUserServiceImpl implements ISysUserService {
 
     @Value("${jwt.secret}")
     private String secret;
@@ -68,6 +68,31 @@ public class SysUserService implements ISysUserService {
         return R.fail(ResultCode.FAILED_LOGIN);
     }
 
+    // 管理员推出登录
+    @Override
+    public boolean logout(String token) {
+        if (StrUtil.isNotEmpty(token) && token.startsWith(HttpConstants.PREFIX)) {
+            token = token.replaceFirst(HttpConstants.PREFIX, StrUtil.EMPTY);
+        }
+        return tokenService.deleteLoginUser(token, secret);
+    }
+
+    // 获取登录管理员信息
+    @Override
+    public R<LoginUserVO> info(String token) {
+        if (StrUtil.isNotEmpty(token) && token.startsWith(HttpConstants.PREFIX)) {
+            token = token.replaceFirst(HttpConstants.PREFIX, StrUtil.EMPTY);
+        }
+        LoginUser loginUser = tokenService.getLoginUser(token, secret);
+        if (loginUser == null) {
+            return R.fail();
+        }
+        LoginUserVO loginUserVO = new LoginUserVO();
+        loginUserVO.setNickName(loginUser.getNickName());
+
+        return R.ok(loginUserVO);
+    }
+
     // 增加管理员用户
     @Override
     public int add(SysUserSaveDTO saveDTO) {
@@ -83,18 +108,5 @@ public class SysUserService implements ISysUserService {
         return sysUserMapper.insert(sysUser);
     }
 
-    @Override
-    public R<LoginUserVO> info(String token) {
-        if (StrUtil.isNotEmpty(token) && token.startsWith(HttpConstants.PREFIX)) {
-            token = token.replaceFirst(HttpConstants.PREFIX, StrUtil.EMPTY);
-        }
-        LoginUser loginUser = tokenService.getLoginUser(token, secret);
-        if (loginUser == null) {
-            return R.fail();
-        }
-        LoginUserVO loginUserVO = new LoginUserVO();
-        loginUserVO.setNickName(loginUser.getNickName());
 
-        return R.ok(loginUserVO);
-    }
 }

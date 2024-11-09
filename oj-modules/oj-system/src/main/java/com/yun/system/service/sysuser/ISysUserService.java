@@ -1,8 +1,8 @@
-package com.yun.system.service;
+package com.yun.system.service.sysuser;
 
 import com.yun.common.core.domain.R;
 import com.yun.common.core.domain.vo.LoginUserVO;
-import com.yun.system.domain.dto.SysUserSaveDTO;
+import com.yun.system.domain.sysuser.dto.SysUserSaveDTO;
 
 /**
  * @author yun
@@ -21,6 +21,22 @@ public interface ISysUserService {
     R<String> login(String userAccount, String password);
 
     /**
+     * 管理员退出登录
+     *
+     * @param token
+     * @return
+     */
+    boolean logout(String token);
+
+    /**
+     * 获取登录管理员信息
+     *
+     * @param token
+     * @return
+     */
+    R<LoginUserVO> info(String token);
+
+    /**
      * 增加管理员
      *
      * @param saveDTO
@@ -28,5 +44,5 @@ public interface ISysUserService {
      */
     int add(SysUserSaveDTO saveDTO);
 
-    R<LoginUserVO> info(String token);
+
 }
