@@ -21,6 +21,11 @@
             <if test="title != null and title != ''">
                 and title like concat('%',#{title},'%')
             </if>
+            <if test="excludeIdSet!=null and !excludeIdSet.isEmpty()">
+                <foreach collection="excludeIdSet" open="AND tq.question_id NOT IN(" item="id" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
         </where>
         order by
         tq.create_time desc

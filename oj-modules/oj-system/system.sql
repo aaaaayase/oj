@@ -1,4 +1,25 @@
 -- 管理端sql
+-- 客户端用户表
+CREATE TABLE `tb_user`
+(
+    `user_id`     bigint(20) unsigned NOT NULL COMMENT '⽤⼾id',
+    `nick_name`   varchar(32) DEFAULT NULL COMMENT '用户昵称',
+    `head_image`  varchar(100) COMMENT '用户头像',
+    `sex`         tinyint COMMENT '用户状态1：男 2：女',
+    `phone`       char(11) not null comment '手机号',
+    `code`        char(6) comment '验证码',
+    `email`       varchar(20) comment '邮箱',
+    `wechat`      varchar(20) comment '微信号',
+    `school_name` varchar(20) comment '学校',
+    `major_name`  varchar(20) comment '专业',
+    `introduce`   varchar(100) comment '个人介绍',
+    `status`      tinyint  not null comment '用户状态0：拉黑 1：正常',
+    `create_by`   bigint(8) unsigned NOT NULL COMMENT '创建人',
+    `create_time` datetime NOT NULL COMMENT '创建时间',
+    `update_by`   bigint(8) unsigned DEFAULT NULL COMMENT '更新人',
+    `update_time` datetime    DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (`user_id`),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='客户端⽤⼾表'
 -- 竞赛表
 CREATE TABLE `tb_exam`
 (

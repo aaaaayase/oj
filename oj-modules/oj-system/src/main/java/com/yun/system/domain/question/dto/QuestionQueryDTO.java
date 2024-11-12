@@ -4,6 +4,8 @@ import com.yun.common.core.domain.dto.PageQueryDTO;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Set;
+
 /**
  * @author yun
  * @date 2024/11/8 21:00
@@ -15,5 +17,9 @@ public class QuestionQueryDTO extends PageQueryDTO {
     private Integer difficulty;
 
     private String title;
+
+    private String excludeIdStr;
+
+    private Set<Long> excludeIdSet;
 
 }

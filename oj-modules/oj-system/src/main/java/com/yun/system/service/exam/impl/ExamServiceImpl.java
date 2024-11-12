@@ -5,6 +5,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
+import com.yun.common.core.constants.Constants;
 import com.yun.common.core.enums.ResultCode;
 import com.yun.common.security.exception.ServiceException;
 import com.yun.system.domain.exam.Exam;
@@ -67,6 +68,8 @@ public class ExamServiceImpl extends ServiceImpl<IExamQuestionMapper, ExamQuesti
     @Override
     public boolean questionAdd(ExamQuestionAddDTO examQuestionAddDTO) {
         Exam exam = getExam(examQuestionAddDTO.getExamId());
+        // 如果竞赛已经开始那么就不能再去修改它了
+        checkExam(exam);
         LinkedHashSet<Long> questionIdSet = examQuestionAddDTO.getQuestionIdSet();
         if (CollectionUtil.isEmpty(questionIdSet)) {
             return true;
@@ -106,10 +109,48 @@ public class ExamServiceImpl extends ServiceImpl<IExamQuestionMapper, ExamQuesti
     public int edit(ExamEditDTO examEditDTO) {
         // 先进行竞赛查找 查不到就不需要进行后续操作了
         Exam exam = getExam(examEditDTO.getExamId());
+        checkExam(exam);
         checkExamSaveParams(examEditDTO, examEditDTO.getExamId());
         exam.setTitle(examEditDTO.getTitle());
         exam.setEndTime(examEditDTO.getEndTime());
         exam.setStartTime(examEditDTO.getStartTime());
+        return examMapper.updateById(exam);
+    }
+
+    @Override
+    public int questionDelete(Long examId, Long questionId) {
+        Exam exam = getExam(examId);
+        checkExam(exam);
+        return examQuestionMapper.delete(new LambdaQueryWrapper<ExamQuestion>()
+                .eq(ExamQuestion::getQuestionId, questionId)
+                .eq(ExamQuestion::getExamId, examId));
+    }
+
+    @Override
+    public int delete(Long examId) {
+        Exam exam = getExam(examId);
+        checkExam(exam);
+        examQuestionMapper.delete(new LambdaQueryWrapper<ExamQuestion>().eq(ExamQuestion::getExamId, examId));
+        return examMapper.deleteById(exam);
+    }
+
+    @Override
+    public int publish(Long examId) {
+        Exam exam = getExam(examId);
+        Long count = examQuestionMapper.selectCount(new LambdaQueryWrapper<ExamQuestion>().eq(ExamQuestion::getExamId, examId));
+        if (count == null || count <= 0) {
+            throw new ServiceException(ResultCode.EXAM_NOT_HAS_QUESTION);
+        }
+        exam.setStatus(Constants.TRUE);
+        return examMapper.updateById(exam);
+    }
+
+    @Override
+    public int cancelPublish(Long examId) {
+        Exam exam = getExam(examId);
+        // 保证此时竞赛处于未开赛状态
+        checkExam(exam);
+        exam.setStatus(Constants.FALSE);
         return examMapper.updateById(exam);
     }
 
@@ -126,6 +167,12 @@ public class ExamServiceImpl extends ServiceImpl<IExamQuestionMapper, ExamQuesti
         }
         if (examSaveDTO.getStartTime().isAfter(examSaveDTO.getEndTime())) {
             throw new ServiceException(ResultCode.EXAM_START_TIME_AFTER_END_TIME);
+        }
+    }
+
+    private void checkExam(Exam exam) {
+        if (exam.getStartTime().isBefore(LocalDateTime.now())) {
+            throw new ServiceException(ResultCode.EXAM_STARTED);
         }
     }
 

@@ -52,6 +52,7 @@ public class ExamController extends BaseController {
     @ApiResponse(responseCode = "2000", description = "服务器繁忙请稍后重试")
     @ApiResponse(responseCode = "3203", description = "竞赛不存在")
     @ApiResponse(responseCode = "3204", description = "为竞赛新增的题目不存在")
+    @ApiResponse(responseCode = "3205", description = "竞赛已经开始")
     public R<Void> questionAdd(@RequestBody ExamQuestionAddDTO examQuestionAddDTO) {
         return toR(examService.questionAdd(examQuestionAddDTO));
     }
@@ -65,8 +66,54 @@ public class ExamController extends BaseController {
     }
 
     @PutMapping("/edit")
+    @ApiResponse(responseCode = "1000", description = "操作成功")
+    @ApiResponse(responseCode = "2000", description = "服务器繁忙请稍后重试")
+    @ApiResponse(responseCode = "3004", description = "竞赛已经存在")
+    @ApiResponse(responseCode = "3201", description = "竞赛开始时间不能早于当前时间")
+    @ApiResponse(responseCode = "3202", description = "竞赛开始时间不能晚于结束时间")
+    @ApiResponse(responseCode = "3205", description = "竞赛已经开始")
     public R<Void> edit(@RequestBody ExamEditDTO examEditDTO) {
 
         return toR(examService.edit(examEditDTO));
+    }
+
+    @DeleteMapping("/question/delete")
+    @Operation(summary = "删除题目", description = "在相关竞赛中删除题目")
+    @ApiResponse(responseCode = "1000", description = "操作成功")
+    @ApiResponse(responseCode = "2000", description = "服务器繁忙请稍后重试")
+    @ApiResponse(responseCode = "3203", description = "竞赛不存在")
+    @ApiResponse(responseCode = "3205", description = "竞赛已经开始")
+    public R<Void> questionDelete(Long examId, Long questionId) {
+        return toR(examService.questionDelete(examId, questionId));
+    }
+
+    @DeleteMapping("/delete")
+    @Operation(summary = "删除竞赛", description = "删除竞赛并且删除竞赛相关题目")
+    @ApiResponse(responseCode = "1000", description = "操作成功")
+    @ApiResponse(responseCode = "2000", description = "服务器繁忙请稍后重试")
+    @ApiResponse(responseCode = "3203", description = "竞赛不存在")
+    @ApiResponse(responseCode = "3205", description = "竞赛已经开始")
+    public R<Void> delete(Long examId) {
+        return toR(examService.delete(examId));
+    }
+
+    @PutMapping("/publish")
+    @Operation(summary = "发布竞赛", description = "根据竞赛id来发布竞赛")
+    @ApiResponse(responseCode = "1000", description = "操作成功")
+    @ApiResponse(responseCode = "2000", description = "服务器繁忙请稍后重试")
+    @ApiResponse(responseCode = "3203", description = "竞赛不存在")
+    @ApiResponse(responseCode = "3206", description = "竞赛不包含题目")
+    public R<Void> publish(Long examId) {
+        return toR(examService.publish(examId));
+    }
+
+    @PutMapping("/cancelPublish")
+    @Operation(summary = "撤销发布竞赛", description = "根据竞赛id来撤销发布竞赛")
+    @ApiResponse(responseCode = "1000", description = "操作成功")
+    @ApiResponse(responseCode = "2000", description = "服务器繁忙请稍后重试")
+    @ApiResponse(responseCode = "3203", description = "竞赛不存在")
+    @ApiResponse(responseCode = "3206", description = "竞赛不包含题目")
+    public R<Void> cancelPublish(Long examId) {
+        return toR(examService.cancelPublish(examId));
     }
 }
