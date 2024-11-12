@@ -2,18 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yun.system.mapper.question.IQuestionMapper">
     <select id="selectQuestionList" resultType="com.yun.system.domain.question.vo.QuestionVO">
-            select
-            tq.question_id,
-            tq.title,
-            tq.difficulty,
-            ts.nick_name as create_name,
-            tq.create_time
-            from
-            tb_question tq
-            left join
-            tb_sys_user ts
-            on
-            tq.create_by = ts.user_id
+        select
+        tq.question_id,
+        tq.title,
+        tq.difficulty,
+        ts.nick_name as create_name,
+        tq.create_time
+        from
+        tb_question tq
+        left join
+        tb_sys_user ts
+        on
+        tq.create_by = ts.user_id
         <where>
             <if test="difficulty != null">
                 and difficulty = #{difficulty}
@@ -23,7 +23,7 @@
             </if>
         </where>
         order by
-        create_time desc
+        tq.create_time desc
     </select>
 
 </mapper>

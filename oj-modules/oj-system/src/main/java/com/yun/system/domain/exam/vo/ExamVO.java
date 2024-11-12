@@ -1,7 +1,6 @@
-package com.yun.system.domain.question.vo;
+package com.yun.system.domain.exam.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Getter;
@@ -11,25 +10,24 @@ import java.time.LocalDateTime;
 
 /**
  * @author yun
- * @date 2024/11/8 22:30
- * @desciption: 问题传给前端的数据
+ * @date 2024/11/10 19:41
+ * @desciption: 返回前端参数
  */
-@Getter
 @Setter
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class QuestionVO {
-
-    // 前端在接收较长id时会发生截断 因此需要去转为字符串 雪花算法生成的id太长了
+@Getter
+public class ExamVO {
     @JsonSerialize(using = ToStringSerializer.class)
-    private Long questionId;
-
+    private Long examId;
     private String title;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime startTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime endTime;
 
-    private Integer difficulty;
+    // 是否已经发布
+    private Integer status;
 
-    // 这里的值是创建的管理员的昵称
     private String createName;
-
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
 }

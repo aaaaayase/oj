@@ -1,23 +1,21 @@
-package com.yun.system.domain.question;
+package com.yun.system.domain.question.vo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.yun.common.core.domain.BaseEntity;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  * @author yun
- * @date 2024/11/8 20:43
- * @desciption: 题目实体类
+ * @date 2024/11/9 20:49
+ * @desciption: 返回给前端的参数类
  */
-@TableName("tb_question")
-@Setter
 @Getter
-public class Question extends BaseEntity {
-
-    @TableId(type = IdType.ASSIGN_ID)
+@Setter
+public class QuestionDetailVO {
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long questionId;
 
     private String title;
@@ -35,5 +33,4 @@ public class Question extends BaseEntity {
     private String defaultCode;
 
     private String mainFuc;
-
 }

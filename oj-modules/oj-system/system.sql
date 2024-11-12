@@ -1,4 +1,31 @@
 -- 管理端sql
+-- 竞赛表
+CREATE TABLE `tb_exam`
+(
+    `exam_id`     BIGINT UNSIGNED NOT NULL COMMENT '竞赛id',
+    `title`       VARCHAR(50) NOT NULL COMMENT '竞赛标题',
+    `start_time`  DATETIME    NOT NULL COMMENT '竞赛开始时间',
+    `end_time`    DATETIME    NOT NULL COMMENT '竞赛结束时间',
+    `status`      TINYINT     NOT NULL DEFAULT 0 COMMENT '是否发布 0：未发布 1：已发布',
+    `create_by`   BIGINT UNSIGNED NOT NULL COMMENT '创建人',
+    `create_time` DATETIME    NOT NULL COMMENT '创建时间',
+    `update_by`   BIGINT UNSIGNED COMMENT '更新人',
+    `update_time` DATETIME COMMENT '更新时间',
+    PRIMARY KEY (`exam_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='竞赛表'
+-- 竞赛与题目一对多关系
+CREATE TABLE `tb_exam_question`
+(
+    `exam_question_id` BIGINT UNSIGNED NOT NULL COMMENT '竞赛题目关系id',
+    `question_id`      BIGINT UNSIGNED NOT NULL COMMENT '题目id',
+    `exam_id`          BIGINT UNSIGNED NOT NULL COMMENT '竞赛id',
+    `question_order`   INT      NOT NULL COMMENT '题目顺序',
+    `create_by`        BIGINT UNSIGNED NOT NULL COMMENT '创建人',
+    `create_time`      DATETIME NOT NULL COMMENT '创建时间',
+    `update_by`        BIGINT UNSIGNED COMMENT '更新人',
+    `update_time`      DATETIME COMMENT '更新时间',
+    PRIMARY KEY (`exam_question_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='竞赛题目关系表'
 -- 题目表
 CREATE TABLE `tb_question`
 (
