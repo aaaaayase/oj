@@ -33,6 +33,7 @@ public class QuestionController extends BaseController {
     @GetMapping("/list")
     @Operation(summary = "获取题目列表", description = "传递参数获取满足条件的题目列表")
     @ApiResponse(responseCode = "1000", description = "操作成功")
+    @ApiResponse(responseCode = "2000", description = "服务器繁忙请稍后重试")
     public TableDataInfo list(QuestionQueryDTO questionQueryDTO) {
         return getTableDataInfo(questionService.list(questionQueryDTO));
     }

@@ -18,7 +18,7 @@ CREATE TABLE `tb_user`
     `create_time` datetime NOT NULL COMMENT '创建时间',
     `update_by`   bigint(8) unsigned DEFAULT NULL COMMENT '更新人',
     `update_time` datetime    DEFAULT NULL COMMENT '更新时间',
-    PRIMARY KEY (`user_id`),
+    PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='客户端⽤⼾表'
 -- 竞赛表
 CREATE TABLE `tb_exam`
