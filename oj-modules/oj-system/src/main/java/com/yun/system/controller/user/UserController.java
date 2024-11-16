@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
  * @date 2024/11/13 11:24
  * @desciption: 客户端用户相关接口
  */
-@Tag(name = "客户端相关接口")
+@Tag(name = "管理端用户相关接口")
 @RestController
 @RequestMapping("/user")
 public class UserController extends BaseController {

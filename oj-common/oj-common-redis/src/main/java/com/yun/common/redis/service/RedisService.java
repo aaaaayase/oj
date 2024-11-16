@@ -48,7 +48,7 @@ public class RedisService {
     /**
      * 获取剩余有效时间
      *
-     * @param key redis键
+     * @param key  redis键
      * @param unit 时间单位
      * @return 剩余有效时间
      */
@@ -93,10 +93,9 @@ public class RedisService {
     /**
      * 缓存基本的对象，Integer、String、实体类等
      *
-     * @param key      缓存的键值
-     * @param value    缓存的值
-     * @param timeout  时间
-     * @param timeUnit 时间颗粒度
+     * @param key     缓存的键值
+     * @param value   缓存的值
+     * @param timeout 时间
      */
     public <T> void setCacheObject(final String key, final T value, final Long
             timeout, final TimeUnit timeUnit) {
@@ -116,6 +115,32 @@ public class RedisService {
             return t;
         }
         return JSON.parseObject(String.valueOf(t), clazz);
+    }
+
+    public <T> List<T> multiGet(final List<String> keyList, Class<T> clazz) {
+        List list = redisTemplate.opsForValue().multiGet(keyList);
+        if (list == null || list.size() <= 0) {
+            return null;
+        }
+        List<T> result = new ArrayList<>();
+        for (Object o : list) {
+            result.add(JSON.parseObject(String.valueOf(o), clazz));
+        }
+        return result;
+    }
+
+    public <K, V> void multiSet(Map<? extends K, ? extends V> map) {
+        redisTemplate.opsForValue().multiSet(map);
+    }
+
+    /**
+     * 计数加一
+     *
+     * @param key
+     * @return
+     */
+    public Long increment(final String key) {
+        return redisTemplate.opsForValue().increment(key);
     }
 
     //*************** 操作list结构 ****************
@@ -168,6 +193,15 @@ public class RedisService {
      */
     public <T> Long removeForList(final String key, T value) {
         return redisTemplate.opsForList().remove(key, 1L, value);
+    }
+
+    public <T> Long indexOfForList(final String key, T value) {
+        return redisTemplate.opsForList().indexOf(key, value);
+    }
+
+    public <T> T indexForList(final String key, long index, Class<T> clazz) {
+        Object t = redisTemplate.opsForList().index(key, index);
+        return JSON.parseObject(String.valueOf(t), clazz);
     }
 
     //************************ 操作Hash类型 ***************************
@@ -225,6 +259,10 @@ public class RedisService {
 
     public Long deleteCacheMapValue(final String key, final String hKey) {
         return redisTemplate.opsForHash().delete(key, hKey);
+    }
+
+    public Long incrementHashValue(final String key, final String hKey, long delta) {
+        return redisTemplate.opsForHash().increment(key, hKey, delta);
     }
 }
 

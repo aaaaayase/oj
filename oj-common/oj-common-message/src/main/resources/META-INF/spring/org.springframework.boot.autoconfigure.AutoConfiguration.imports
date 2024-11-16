@@ -1,0 +1,4 @@
+com.yun.common.message.config.AliSmsConfig
+com.yun.common.message.service.AliSmsService
+
+#这种配置文件感觉就是为了让指定的类被spring读取到

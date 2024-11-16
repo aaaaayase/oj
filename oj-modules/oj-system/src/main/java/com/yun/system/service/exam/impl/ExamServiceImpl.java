@@ -18,6 +18,7 @@ import com.yun.system.domain.exam.vo.ExamDetailVO;
 import com.yun.system.domain.exam.vo.ExamVO;
 import com.yun.system.domain.question.Question;
 import com.yun.system.domain.question.vo.QuestionVO;
+import com.yun.system.manager.ExamCacheManager;
 import com.yun.system.mapper.exam.IExamMapper;
 import com.yun.system.mapper.exam.IExamQuestionMapper;
 import com.yun.system.mapper.question.IQuestionMapper;
@@ -29,7 +30,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author yun
@@ -47,6 +47,9 @@ public class ExamServiceImpl extends ServiceImpl<IExamQuestionMapper, ExamQuesti
 
     @Autowired
     private IExamQuestionMapper examQuestionMapper;
+
+    @Autowired
+    private ExamCacheManager examCacheManager;
 
     @Override
     public List<ExamVO> list(ExamQueryDTO examQueryDTO) {
@@ -137,20 +140,34 @@ public class ExamServiceImpl extends ServiceImpl<IExamQuestionMapper, ExamQuesti
     @Override
     public int publish(Long examId) {
         Exam exam = getExam(examId);
+        // 检验要发布的竞赛是否已经结束了
+        if (exam.getEndTime().isBefore(LocalDateTime.now())) {
+            throw new ServiceException(ResultCode.EXAM_IS_FINISH);
+        }
         Long count = examQuestionMapper.selectCount(new LambdaQueryWrapper<ExamQuestion>().eq(ExamQuestion::getExamId, examId));
         if (count == null || count <= 0) {
             throw new ServiceException(ResultCode.EXAM_NOT_HAS_QUESTION);
         }
         exam.setStatus(Constants.TRUE);
+
+        // 在发布竞赛的同时去将竞赛信息存到redis中
+        examCacheManager.addCache(exam);
+
+
         return examMapper.updateById(exam);
     }
 
     @Override
     public int cancelPublish(Long examId) {
         Exam exam = getExam(examId);
+        // 检验要撤销发布的竞赛是否已经结束了
+        if (exam.getEndTime().isBefore(LocalDateTime.now())) {
+            throw new ServiceException(ResultCode.EXAM_IS_FINISH);
+        }
         // 保证此时竞赛处于未开赛状态
         checkExam(exam);
         exam.setStatus(Constants.FALSE);
+        examCacheManager.deleteCache(examId);
         return examMapper.updateById(exam);
     }
 

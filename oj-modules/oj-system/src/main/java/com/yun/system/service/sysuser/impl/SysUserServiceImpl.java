@@ -58,7 +58,7 @@ public class SysUserServiceImpl implements ISysUserService {
 //            loginResult.setCode(ResultCode.SUCCESS.getCode());
 //            loginResult.setMsg(ResultCode.SUCCESS.getMsg());
 
-            return R.ok(tokenService.createToken(sysUser.getUserId(), secret, UserIdentity.ADMIN.getValue(), sysUser.getNickName()));
+            return R.ok(tokenService.createToken(sysUser.getUserId(), secret, UserIdentity.ADMIN.getValue(), sysUser.getNickName(), null));
         }
 
 //        loginResult.setMsg(ResultCode.FAILED_LOGIN.getMsg());

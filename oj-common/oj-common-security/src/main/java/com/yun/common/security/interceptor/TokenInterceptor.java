@@ -1,5 +1,6 @@
 package com.yun.common.security.interceptor;
 
+import cn.hutool.core.util.StrUtil;
 import com.yun.common.core.constants.HttpConstants;
 import com.yun.common.security.service.TokenService;
 import io.micrometer.common.util.StringUtils;
@@ -31,6 +32,9 @@ public class TokenInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String token = getToken(request);
+        if (StrUtil.isEmpty(token)) {
+            return true;
+        }
         tokenService.extendToken(token, secret);
         return true;
     }

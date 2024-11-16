@@ -12,4 +12,7 @@ import lombok.Setter;
 @Getter
 public class LoginUserVO {
     private String nickName;
+
+    private String headImage; // 头像
+
 }

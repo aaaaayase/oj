@@ -1,4 +1,4 @@
-package com.yun.friend.domain;
+package com.yun.friend.domain.user;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

@@ -35,6 +35,8 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
         <oj-common-security.version>1.0-SNAPSHOT</oj-common-security.version>
         <oj-common-swagger.version>1.0-SNAPSHOT</oj-common-swagger.version>
         <oj-common-mybatis.version>1.0-SNAPSHOT</oj-common-mybatis.version>
+        <oj-common-message.version>1.0-SNAPSHOT</oj-common-message.version>
+        <xxl-job.version>2.4.0</xxl-job.version>
         <springdoc.version>2.2.0</springdoc.version>
         <pagehelper.boot.version>2.0.0</pagehelper.boot.version>
     </properties>

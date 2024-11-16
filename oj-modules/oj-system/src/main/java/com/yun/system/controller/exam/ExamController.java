@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/exam")
-@Tag(name = "竞赛管理接口")
+@Tag(name = "管理端竞赛接口")
 public class ExamController extends BaseController {
 
     @Autowired
@@ -31,6 +31,7 @@ public class ExamController extends BaseController {
     @GetMapping("/list")
     @Operation(summary = "获取竞赛列表", description = "传递参数获取满足条件的竞赛列表")
     @ApiResponse(responseCode = "1000", description = "操作成功")
+    @ApiResponse(responseCode = "2000", description = "服务器繁忙请稍后重试")
     public TableDataInfo list(ExamQueryDTO examQueryDTO) {
         return getTableDataInfo(examService.list(examQueryDTO));
     }
@@ -66,6 +67,7 @@ public class ExamController extends BaseController {
     }
 
     @PutMapping("/edit")
+    @Operation(summary = "编辑竞赛信息", description = "根据传递参数编辑竞赛信息")
     @ApiResponse(responseCode = "1000", description = "操作成功")
     @ApiResponse(responseCode = "2000", description = "服务器繁忙请稍后重试")
     @ApiResponse(responseCode = "3004", description = "竞赛已经存在")
@@ -103,6 +105,7 @@ public class ExamController extends BaseController {
     @ApiResponse(responseCode = "2000", description = "服务器繁忙请稍后重试")
     @ApiResponse(responseCode = "3203", description = "竞赛不存在")
     @ApiResponse(responseCode = "3206", description = "竞赛不包含题目")
+    @ApiResponse(responseCode = "3207", description = "竞赛已经结束不能进行操作")
     public R<Void> publish(Long examId) {
         return toR(examService.publish(examId));
     }

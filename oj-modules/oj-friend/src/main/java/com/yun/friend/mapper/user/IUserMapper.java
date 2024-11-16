@@ -1,7 +1,7 @@
-package com.yun.friend.mapper;
+package com.yun.friend.mapper.user;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.yun.friend.domain.User;
+import com.yun.friend.domain.user.User;
 
 /**
  * @author yun

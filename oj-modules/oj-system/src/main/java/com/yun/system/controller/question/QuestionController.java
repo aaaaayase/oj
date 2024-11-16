@@ -24,7 +24,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/question")
-@Tag(name = "题目管理接口")
+@Tag(name = "管理端题目接口")
 public class QuestionController extends BaseController {
 
     @Autowired

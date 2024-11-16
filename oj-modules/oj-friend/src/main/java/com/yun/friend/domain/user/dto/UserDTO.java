@@ -1,4 +1,4 @@
-package com.yun.friend.domain.dto;
+package com.yun.friend.domain.user.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,4 +13,5 @@ import lombok.Setter;
 public class UserDTO {
 
     private String phone;
+    private String code;
 }
