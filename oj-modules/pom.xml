@@ -54,9 +54,5 @@
             <artifactId>oj-common-mybatis</artifactId>
             <version>${oj-common-mybatis.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
     </dependencies>
 </project>

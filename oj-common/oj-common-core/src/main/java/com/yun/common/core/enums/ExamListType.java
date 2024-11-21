@@ -13,7 +13,8 @@ import lombok.Getter;
 public enum ExamListType {
 
     EXAM_UN_FINISH_LIST(0),
-    EXAM_HISTORY_lIST(1);
+    EXAM_HISTORY_lIST(1),
+    USER_EXAM_lIST(2);
     private final Integer value;
 
 }

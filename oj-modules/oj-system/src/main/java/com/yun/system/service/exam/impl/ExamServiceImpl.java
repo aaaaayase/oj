@@ -73,6 +73,9 @@ public class ExamServiceImpl extends ServiceImpl<IExamQuestionMapper, ExamQuesti
         Exam exam = getExam(examQuestionAddDTO.getExamId());
         // 如果竞赛已经开始那么就不能再去修改它了
         checkExam(exam);
+        if (Constants.TRUE.equals(exam.getStatus())) {
+            throw new ServiceException(ResultCode.EXAM_IS_PUBLISH);
+        }
         LinkedHashSet<Long> questionIdSet = examQuestionAddDTO.getQuestionIdSet();
         if (CollectionUtil.isEmpty(questionIdSet)) {
             return true;
@@ -112,6 +115,9 @@ public class ExamServiceImpl extends ServiceImpl<IExamQuestionMapper, ExamQuesti
     public int edit(ExamEditDTO examEditDTO) {
         // 先进行竞赛查找 查不到就不需要进行后续操作了
         Exam exam = getExam(examEditDTO.getExamId());
+        if (exam.getStatus().equals(Constants.TRUE)) {
+            throw new ServiceException(ResultCode.EXAM_IS_PUBLISH);
+        }
         checkExam(exam);
         checkExamSaveParams(examEditDTO, examEditDTO.getExamId());
         exam.setTitle(examEditDTO.getTitle());
@@ -124,6 +130,9 @@ public class ExamServiceImpl extends ServiceImpl<IExamQuestionMapper, ExamQuesti
     public int questionDelete(Long examId, Long questionId) {
         Exam exam = getExam(examId);
         checkExam(exam);
+        if (Constants.TRUE.equals(exam.getStatus())) {
+            throw new ServiceException(ResultCode.EXAM_IS_PUBLISH);
+        }
         return examQuestionMapper.delete(new LambdaQueryWrapper<ExamQuestion>()
                 .eq(ExamQuestion::getQuestionId, questionId)
                 .eq(ExamQuestion::getExamId, examId));
@@ -132,6 +141,9 @@ public class ExamServiceImpl extends ServiceImpl<IExamQuestionMapper, ExamQuesti
     @Override
     public int delete(Long examId) {
         Exam exam = getExam(examId);
+        if (exam.getStatus().equals(Constants.TRUE)) {
+            throw new ServiceException(ResultCode.EXAM_IS_PUBLISH);
+        }
         checkExam(exam);
         examQuestionMapper.delete(new LambdaQueryWrapper<ExamQuestion>().eq(ExamQuestion::getExamId, examId));
         return examMapper.deleteById(exam);

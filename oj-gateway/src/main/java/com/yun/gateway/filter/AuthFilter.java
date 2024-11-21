@@ -2,12 +2,14 @@ package com.yun.gateway.filter;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
 import com.yun.common.core.constants.CacheConstants;
+import com.yun.common.core.constants.Constants;
 import com.yun.common.core.constants.HttpConstants;
 import com.yun.common.core.domain.LoginUser;
 import com.yun.common.core.domain.R;
 import com.yun.common.core.enums.ResultCode;
 import com.yun.common.core.enums.UserIdentity;
 import com.yun.common.core.utils.JwtUtils;
+import com.yun.common.core.utils.ThreadLocalUtil;
 import com.yun.common.redis.service.RedisService;
 import com.yun.gateway.properties.IgnoreWhiteProperties;
 import io.jsonwebtoken.Claims;
@@ -74,8 +76,8 @@ public class AuthFilter implements GlobalFilter, Ordered {
         if (!isLogin) {
             return unauthorizedResponse(exchange, "登录状态已过期");
         }
-        String userid = JwtUtils.getUserId(claims); //判断jwt中的信息是否完整
-        if (StrUtil.isEmpty(userid)) {
+        String userId = JwtUtils.getUserId(claims); //判断jwt中的信息是否完整
+        if (StrUtil.isEmpty(userId)) {
             return unauthorizedResponse(exchange, "令牌验证失败");
         }
 
@@ -87,6 +89,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
         if (url.contains(HttpConstants.FRIEND_URL_PREFIX) && !UserIdentity.ORDINARY.getValue().equals(user.getIdentity())) {
             return unauthorizedResponse(exchange, "令牌验证失败");
         }
+
         return chain.filter(exchange);
     }
     /**

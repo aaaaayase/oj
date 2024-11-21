@@ -51,7 +51,7 @@ public class TokenService {
 
     // 延长token的有效时间 实际上就是延长redis中存储的用于身份认证的敏感信息的有效时间 --操作redis
     // 调用时机为身份认证之后 controller之前
-    public void extendToken(String token, String secret) {
+    public void extendToken(Claims claims) {
 //        Claims claims;
 //        try {
 //            claims = JwtUtils.parseToken(token, secret);
@@ -64,7 +64,7 @@ public class TokenService {
 //            return;
 //        }
 //        String userKey = JwtUtils.getUserKey(claims);
-        String userKey = getUserKey(token, secret);
+        String userKey = getUserKey(claims);
         if (userKey == null) {
             return;
         }
@@ -96,7 +96,23 @@ public class TokenService {
         return redisService.deleteObject(getTokenKey(userKey));
     }
 
+    public Long getUserId(Claims claims) {
+        if (claims == null) return null;
+        return Long.valueOf(JwtUtils.getUserId(claims));
+    }
+
+    public String getUserKey(Claims claims) {
+        if (claims == null) return null;
+        return JwtUtils.getUserKey(claims);
+    }
+
     private String getUserKey(String token, String secret) {
+        Claims claims = getClaims(token, secret);
+        if (claims == null) return null;
+        return JwtUtils.getUserKey(claims);
+    }
+
+    public Claims getClaims(String token, String secret) {
         Claims claims;
         try {
             claims = JwtUtils.parseToken(token, secret);
@@ -108,7 +124,7 @@ public class TokenService {
             log.error("解析token：{}出现异常", token, e);
             return null;
         }
-        return JwtUtils.getUserKey(claims);
+        return claims;
     }
 
     private String getTokenKey(String userKey) {
@@ -116,4 +132,11 @@ public class TokenService {
     }
 
 
+    public void refreshLoginUser(String nickName, String headImage, String userKey) {
+        String key = getTokenKey(userKey);
+        LoginUser loginUser = redisService.getCacheObject(key, LoginUser.class);
+        loginUser.setNickName(nickName);
+        loginUser.setHeadImage(headImage);
+        redisService.setCacheObject(key, loginUser);
+    }
 }

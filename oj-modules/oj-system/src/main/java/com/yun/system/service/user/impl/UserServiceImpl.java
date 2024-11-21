@@ -7,6 +7,7 @@ import com.yun.system.domain.user.User;
 import com.yun.system.domain.user.dto.UserDTO;
 import com.yun.system.domain.user.dto.UserQueryDTO;
 import com.yun.system.domain.user.vo.UserVO;
+import com.yun.system.manager.UserCacheManager;
 import com.yun.system.mapper.user.IUserMapper;
 import com.yun.system.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class UserServiceImpl implements IUserService {
     @Autowired
     private IUserMapper userMapper;
 
+    @Autowired
+    private UserCacheManager userCacheManager;
+
     @Override
     public List<UserVO> list(UserQueryDTO userQueryDTO) {
         PageHelper.startPage(userQueryDTO.getPageNum(), userQueryDTO.getPageSize());
@@ -39,6 +43,7 @@ public class UserServiceImpl implements IUserService {
             throw new ServiceException(ResultCode.FAILED_USER_NOT_EXISTS);
         }
         user.setStatus(userDTO.getStatus());
+        userCacheManager.updateStatus(user.getUserId(),user.getStatus());
         return userMapper.updateById(user);
     }
 }

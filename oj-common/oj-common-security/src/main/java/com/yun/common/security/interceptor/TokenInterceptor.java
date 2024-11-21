@@ -1,8 +1,11 @@
 package com.yun.common.security.interceptor;
 
 import cn.hutool.core.util.StrUtil;
+import com.yun.common.core.constants.Constants;
 import com.yun.common.core.constants.HttpConstants;
+import com.yun.common.core.utils.ThreadLocalUtil;
 import com.yun.common.security.service.TokenService;
+import io.jsonwebtoken.Claims;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -35,8 +38,18 @@ public class TokenInterceptor implements HandlerInterceptor {
         if (StrUtil.isEmpty(token)) {
             return true;
         }
-        tokenService.extendToken(token, secret);
+        Claims claims = tokenService.getClaims(token, secret);
+        Long userId = tokenService.getUserId(claims);
+        String userKey = tokenService.getUserKey(claims);
+        ThreadLocalUtil.set(Constants.USER_ID, userId);
+        ThreadLocalUtil.set(Constants.USER_KEY, userKey);
+        tokenService.extendToken(claims);
         return true;
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        ThreadLocalUtil.remove();
     }
 
     private String getToken(HttpServletRequest request) {

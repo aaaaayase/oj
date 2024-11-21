@@ -54,6 +54,7 @@ public class ExamController extends BaseController {
     @ApiResponse(responseCode = "3203", description = "竞赛不存在")
     @ApiResponse(responseCode = "3204", description = "为竞赛新增的题目不存在")
     @ApiResponse(responseCode = "3205", description = "竞赛已经开始")
+    @ApiResponse(responseCode = "3208", description = "竞赛已经发布不能进行编辑删除等操作")
     public R<Void> questionAdd(@RequestBody ExamQuestionAddDTO examQuestionAddDTO) {
         return toR(examService.questionAdd(examQuestionAddDTO));
     }
@@ -85,6 +86,7 @@ public class ExamController extends BaseController {
     @ApiResponse(responseCode = "2000", description = "服务器繁忙请稍后重试")
     @ApiResponse(responseCode = "3203", description = "竞赛不存在")
     @ApiResponse(responseCode = "3205", description = "竞赛已经开始")
+    @ApiResponse(responseCode = "3208", description = "竞赛已经发布不能进行编辑删除等操作")
     public R<Void> questionDelete(Long examId, Long questionId) {
         return toR(examService.questionDelete(examId, questionId));
     }

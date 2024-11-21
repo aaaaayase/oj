@@ -14,8 +14,11 @@ import com.yun.system.domain.question.Question;
 import com.yun.system.domain.question.dto.QuestionAddDTO;
 import com.yun.system.domain.question.dto.QuestionEditDTO;
 import com.yun.system.domain.question.dto.QuestionQueryDTO;
+import com.yun.system.domain.question.es.QuestionES;
 import com.yun.system.domain.question.vo.QuestionDetailVO;
 import com.yun.system.domain.question.vo.QuestionVO;
+import com.yun.system.elasticsearch.QuestionRepository;
+import com.yun.system.manager.QuestionCacheManager;
 import com.yun.system.mapper.question.IQuestionMapper;
 import com.yun.system.service.question.IQuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +39,12 @@ public class QuestionServiceImpl implements IQuestionService {
 
     @Autowired
     private IQuestionMapper questionMapper;
+
+    @Autowired
+    private QuestionRepository questionRepository;
+
+    @Autowired
+    private QuestionCacheManager questionCacheManager;
 
     @Override
     public List<QuestionVO> list(QuestionQueryDTO questionQueryDTO) {
@@ -63,7 +72,7 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
-    public int add(QuestionAddDTO questionAddDTO) {
+    public boolean add(QuestionAddDTO questionAddDTO) {
         // 添加之前需要判断当前的题目是否已经存在 这里的标准就定为标题需要不一样
         List<Question> questionList = questionMapper.selectList(new LambdaQueryWrapper<Question>().eq(Question::getTitle, questionAddDTO.getTitle()));
         if (!CollectionUtil.isEmpty(questionList)) {
@@ -71,7 +80,15 @@ public class QuestionServiceImpl implements IQuestionService {
         }
         Question question = new Question();
         BeanUtil.copyProperties(questionAddDTO, question);
-        return questionMapper.insert(question);
+        int insert = questionMapper.insert(question);
+        if (insert <= 0) {
+            return false;
+        }
+        QuestionES questionES = new QuestionES();
+        BeanUtil.copyProperties(question, questionES);
+        questionRepository.save(questionES);
+        questionCacheManager.addCache(question.getQuestionId());
+        return true;
     }
 
     @Override
@@ -86,7 +103,7 @@ public class QuestionServiceImpl implements IQuestionService {
     }
 
     @Override
-    public int edit(QuestionEditDTO questionEditDTO) {
+    public boolean edit(QuestionEditDTO questionEditDTO) {
         Question oldQuestion = questionMapper.selectById(questionEditDTO.getQuestionId());
         if (oldQuestion == null) {
             throw new ServiceException(ResultCode.FAILED_NOT_EXISTS);
@@ -99,15 +116,29 @@ public class QuestionServiceImpl implements IQuestionService {
         oldQuestion.setDefaultCode(questionEditDTO.getDefaultCode());
         oldQuestion.setSpaceLimit(questionEditDTO.getSpaceLimit());
         oldQuestion.setTimeLimit(questionEditDTO.getTimeLimit());
-        return questionMapper.updateById(oldQuestion);
+
+        int update = questionMapper.updateById(oldQuestion);
+        if (update <= 0) {
+            return false;
+        }
+        QuestionES questionES = new QuestionES();
+        BeanUtil.copyProperties(oldQuestion, questionES);
+        questionRepository.save(questionES);
+        return true;
     }
 
     @Override
-    public int delete(Long questionId) {
+    public boolean delete(Long questionId) {
         Question question = questionMapper.selectById(questionId);
         if (question == null) {
             throw new ServiceException(ResultCode.FAILED_NOT_EXISTS);
         }
-        return questionMapper.deleteById(questionId);
+        int delete = questionMapper.deleteById(questionId);
+        if (delete <= 0) {
+            return false;
+        }
+        questionRepository.deleteById(questionId);
+        questionCacheManager.deleteCache(questionId);
+        return true;
     }
 }

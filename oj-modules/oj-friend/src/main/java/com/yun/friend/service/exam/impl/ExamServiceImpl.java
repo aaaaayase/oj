@@ -3,7 +3,9 @@ package com.yun.friend.service.exam.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.yun.common.core.constants.Constants;
 import com.yun.common.core.domain.TableDataInfo;
+import com.yun.common.core.utils.ThreadLocalUtil;
 import com.yun.friend.domain.exam.dto.ExamQueryDTO;
 import com.yun.friend.domain.exam.vo.ExamVO;
 import com.yun.friend.manager.ExamCacheManager;
@@ -38,20 +40,61 @@ public class ExamServiceImpl implements IExamService {
     @Override
     public TableDataInfo redisList(ExamQueryDTO examQueryDTO) {
         // 从redis中去获取   竞赛列表的数据
-        Long listSize = examCacheManager.getListSize(examQueryDTO.getType());
+        Long total = examCacheManager.getListSize(examQueryDTO.getType(), null);
         List<ExamVO> examVOList;
-        if (listSize == null || listSize <= 0) {
+        if (total == null || total <= 0) {
             examVOList = list(examQueryDTO);
-            examCacheManager.refreshCache(examQueryDTO.getType());
-            listSize = new PageInfo<>(examVOList).getTotal();
+            examCacheManager.refreshCache(examQueryDTO.getType(), null);
+            total = new PageInfo<>(examVOList).getTotal();
         } else {
-            examVOList = examCacheManager.getExamVOList(examQueryDTO);
-            listSize = examCacheManager.getListSize(examQueryDTO.getType());
+            examVOList = examCacheManager.getExamVOList(examQueryDTO, null);
+            total = examCacheManager.getListSize(examQueryDTO.getType(), null);
         }
         if (CollectionUtil.isEmpty(examVOList)) {
             return TableDataInfo.empty();
         }
+        assembleExamVOList(examVOList);
+        return TableDataInfo.success(examVOList, total);
+    }
 
-        return TableDataInfo.success(examVOList, listSize);
+    @Override
+    public String getFirstQuestion(Long examId) {
+        checkAndRefresh(examId);
+        return examCacheManager.getFirstQuestion(examId).toString();
+    }
+
+    @Override
+    public String preQuestion(Long examId, Long questionId) {
+        checkAndRefresh(examId);
+
+        return examCacheManager.preQuestion(examId, questionId).toString();
+    }
+
+    @Override
+    public String nextQuestion(Long examId, Long questionId) {
+        checkAndRefresh(examId);
+
+        return examCacheManager.nextQuestion(examId, questionId).toString();
+    }
+
+
+    private void checkAndRefresh(Long examId) {
+        Long listSize = examCacheManager.getExamQuestionListSize(examId);
+        if (listSize <= 0 || listSize == null) {
+            examCacheManager.refreshExamQuestionCache(examId);
+        }
+    }
+
+    private void assembleExamVOList(List<ExamVO> examVOList) {
+        Long userId = ThreadLocalUtil.get(Constants.USER_ID, Long.class);
+        List<Long> userExamIdList = examCacheManager.getAllUserExamList(userId);
+        if (CollectionUtil.isEmpty(userExamIdList)) {
+            return;
+        }
+        for (ExamVO examVO : examVOList) {
+            if (userExamIdList.contains(examVO.getExamId())) {
+                examVO.setEnter(true);
+            }
+        }
     }
 }

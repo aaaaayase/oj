@@ -18,6 +18,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
         <module>oj-modules</module>
         <module>oj-common</module>
         <module>oj-gateway</module>
+        <module>oj-api</module>
     </modules>
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -36,9 +37,19 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
         <oj-common-swagger.version>1.0-SNAPSHOT</oj-common-swagger.version>
         <oj-common-mybatis.version>1.0-SNAPSHOT</oj-common-mybatis.version>
         <oj-common-message.version>1.0-SNAPSHOT</oj-common-message.version>
+        <oj-common-elasticsearch.version>1.0-SNAPSHOT</oj-common-elasticsearch.version>
+        <oj-common-rabbitmq.version>1.0-SNAPSHOT</oj-common-rabbitmq.version>
+        <com.github.docker-java.version>3.3.4</com.github.docker-java.version>
+        <oj-common-file.version>1.0-SNAPSHOT</oj-common-file.version>
+        <oj-api.version>1.0-SNAPSHOT</oj-api.version>
+        <com.aliyun.oss.version>3.17.4</com.aliyun.oss.version>
+        <javax.xml.bind.version>2.3.1</javax.xml.bind.version>
+        <javax.activation.version>1.1.1</javax.activation.version>
+        <org.glassfish.jaxb.version>2.3.3</org.glassfish.jaxb.version>
         <xxl-job.version>2.4.0</xxl-job.version>
         <springdoc.version>2.2.0</springdoc.version>
         <pagehelper.boot.version>2.0.0</pagehelper.boot.version>
+        <transmittable-thread-local.version>2.14.4</transmittable-thread-local.version>
     </properties>
     <dependencies>
         <!-- bootstrap 启动器 -->

@@ -5,6 +5,8 @@ import com.yun.common.core.controller.BaseController;
 import com.yun.common.core.domain.R;
 import com.yun.common.core.domain.vo.LoginUserVO;
 import com.yun.friend.domain.user.dto.UserDTO;
+import com.yun.friend.domain.user.dto.UserUpdateDTO;
+import com.yun.friend.domain.user.vo.UserVO;
 import com.yun.friend.service.user.IUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -62,4 +64,32 @@ public class UserController extends BaseController {
     public R<LoginUserVO> info(@RequestHeader(HttpConstants.AUTHENTICATION) String token) {
         return userService.info(token);
     }
+
+    @GetMapping("/detail")
+    @Operation(summary = "获取用户详细", description = "用户详情页信息")
+    @ApiResponse(responseCode = "1000", description = "操作成功")
+    @ApiResponse(responseCode = "2000", description = "服务器繁忙请稍后重试")
+    @ApiResponse(responseCode = "3102", description = "用户不存在")
+    public R<UserVO> detail() {
+        return R.ok(userService.detail());
+    }
+
+    @PutMapping("/edit")
+    @Operation(summary = "编辑用户详细", description = "编辑用户详情页信息")
+    @ApiResponse(responseCode = "1000", description = "操作成功")
+    @ApiResponse(responseCode = "2000", description = "服务器繁忙请稍后重试")
+    @ApiResponse(responseCode = "3102", description = "用户不存在")
+    public R<Void> edit(@RequestBody UserUpdateDTO userUpdateDTO) {
+        return toR(userService.edit(userUpdateDTO));
+    }
+
+    @PutMapping("/head-image/update")
+    @Operation(summary = "更新头像信息", description = "更新缓存及数据库中头像信息")
+    @ApiResponse(responseCode = "1000", description = "操作成功")
+    @ApiResponse(responseCode = "2000", description = "服务器繁忙请稍后重试")
+    @ApiResponse(responseCode = "3102", description = "用户不存在")
+    public R<Void> updateHeadImage(@RequestBody UserUpdateDTO userUpdateDTO) {
+        return toR(userService.updateHeadImage(userUpdateDTO.getHeadImage()));
+    }
+
 }

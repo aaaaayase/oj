@@ -35,8 +35,32 @@ public class ExamController extends BaseController {
     }
 
     @GetMapping("/semiLogin/redis/list")
-    public TableDataInfo redisList(ExamQueryDTO examQueryDTO){
+    @Operation(summary = "获取竞赛列表", description = "传递参数在缓存中获取满足条件的竞赛列表")
+    @ApiResponse(responseCode = "1000", description = "操作成功")
+    @ApiResponse(responseCode = "2000", description = "服务器繁忙请稍后重试")
+    public TableDataInfo redisList(ExamQueryDTO examQueryDTO) {
         return examService.redisList(examQueryDTO);
+    }
+
+    @GetMapping("/getFirstQuestion")
+    @ApiResponse(responseCode = "1000", description = "操作成功")
+    @ApiResponse(responseCode = "2000", description = "服务器繁忙请稍后重试")
+    public R<String> getFirstQuestion(Long examId) {
+        return R.ok(examService.getFirstQuestion(examId));
+    }
+
+    @GetMapping("/preQuestion")
+    @ApiResponse(responseCode = "1000", description = "操作成功")
+    @ApiResponse(responseCode = "2000", description = "服务器繁忙请稍后重试")
+    public R<String> preQuestion(Long examId, Long questionId) {
+        return R.ok(examService.preQuestion(examId, questionId));
+    }
+
+    @GetMapping("/nextQuestion")
+    @ApiResponse(responseCode = "1000", description = "操作成功")
+    @ApiResponse(responseCode = "2000", description = "服务器繁忙请稍后重试")
+    public R<String> nextQuestion(Long examId, Long questionId) {
+        return R.ok(examService.nextQuestion(examId, questionId));
     }
 
 }

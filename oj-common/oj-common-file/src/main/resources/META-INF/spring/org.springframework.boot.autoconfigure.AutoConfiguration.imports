@@ -1,0 +1,3 @@
+com.yun.common.file.service.OSSService
+com.yun.common.file.config.OSSConfig
+com.yun.common.file.config.OSSProperties

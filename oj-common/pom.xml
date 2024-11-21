@@ -18,6 +18,9 @@
         <module>oj-common-redis</module>
         <module>oj-common-mybatis</module>
         <module>oj-common-message</module>
+        <module>oj-common-elasticsearch</module>
+        <module>oj-common-file</module>
+        <module>oj-common-rabbitmq</module>
     </modules>
 
     <properties>
@@ -25,5 +28,4 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    
 </project>

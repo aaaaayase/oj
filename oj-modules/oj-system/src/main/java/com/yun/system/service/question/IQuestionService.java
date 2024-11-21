@@ -18,12 +18,12 @@ import java.util.List;
 public interface IQuestionService {
     List<QuestionVO> list(QuestionQueryDTO questionQueryDTO);
 
-    int add(QuestionAddDTO questionAddDTO);
+    boolean add(QuestionAddDTO questionAddDTO);
 
     QuestionDetailVO detail(Long questionId);
 
-    int edit(QuestionEditDTO questionEditDTO);
+    boolean edit(QuestionEditDTO questionEditDTO);
 
-    int delete(Long questionId);
+    boolean delete(Long questionId);
 
 }

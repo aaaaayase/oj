@@ -4,6 +4,7 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.yun.common.core.constants.CacheConstants;
+import com.yun.common.core.constants.Constants;
 import com.yun.common.core.constants.HttpConstants;
 import com.yun.common.core.domain.LoginUser;
 import com.yun.common.core.domain.R;
@@ -11,14 +12,19 @@ import com.yun.common.core.domain.vo.LoginUserVO;
 import com.yun.common.core.enums.ResultCode;
 import com.yun.common.core.enums.UserIdentity;
 import com.yun.common.core.enums.UserStatus;
+import com.yun.common.core.utils.ThreadLocalUtil;
 import com.yun.common.message.service.AliSmsService;
 import com.yun.common.redis.service.RedisService;
 import com.yun.common.security.exception.ServiceException;
 import com.yun.common.security.service.TokenService;
 import com.yun.friend.domain.user.User;
 import com.yun.friend.domain.user.dto.UserDTO;
+import com.yun.friend.domain.user.dto.UserUpdateDTO;
+import com.yun.friend.domain.user.vo.UserVO;
+import com.yun.friend.manager.UserCacheManager;
 import com.yun.friend.mapper.user.IUserMapper;
 import com.yun.friend.service.user.IUserService;
+import org.apache.tomcat.util.bcel.classfile.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -48,6 +54,9 @@ public class UserServiceImpl implements IUserService {
     @Autowired
     private IUserMapper userMapper;
 
+    @Autowired
+    private UserCacheManager userCacheManager;
+
     @Value("${sms.code-expiration:}")
     private Long phoneCodeExpiration;
 
@@ -59,6 +68,9 @@ public class UserServiceImpl implements IUserService {
 
     @Value("${jwt.secret:}")
     private String secret;
+
+    @Value("${file.oss.downloadUrl}")
+    private String downloadUrl;
 
     @Override
     public boolean sendCode(UserDTO userDTO) {
@@ -108,6 +120,7 @@ public class UserServiceImpl implements IUserService {
             user = new User();
             user.setPhone(phone);
             user.setStatus(UserStatus.NORMAL.getValue());
+            user.setCreateBy(Constants.SYSTEM_USER_ID);
             userMapper.insert(user);
         }
 
@@ -133,8 +146,73 @@ public class UserServiceImpl implements IUserService {
         }
         LoginUserVO loginUserVO = new LoginUserVO();
         loginUserVO.setNickName(loginUser.getNickName());
-        loginUserVO.setHeadImage(loginUser.getHeadImage());
+        if (StrUtil.isNotEmpty(loginUser.getHeadImage())) {
+            loginUserVO.setHeadImage(downloadUrl + loginUser.getHeadImage());
+        }
         return R.ok(loginUserVO);
+    }
+
+    @Override
+    public UserVO detail() {
+        Long userId = ThreadLocalUtil.get(Constants.USER_ID, Long.class);
+        if (userId == null) {
+            throw new ServiceException(ResultCode.FAILED_USER_NOT_EXISTS);
+        }
+        UserVO userVO = userCacheManager.getUserById(userId);
+        if (userVO == null) {
+            throw new ServiceException(ResultCode.FAILED_USER_NOT_EXISTS);
+        }
+        if (StrUtil.isNotEmpty(userVO.getHeadImage())) {
+            userVO.setHeadImage(downloadUrl + userVO.getHeadImage());
+        }
+        return userVO;
+    }
+
+    @Override
+    public int edit(UserUpdateDTO userUpdateDTO) {
+        Long userId = ThreadLocalUtil.get(Constants.USER_ID, Long.class);
+        if (userId == null) {
+            throw new ServiceException(ResultCode.FAILED_USER_NOT_EXISTS);
+        }
+
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            throw new ServiceException(ResultCode.FAILED_USER_NOT_EXISTS);
+        }
+
+        user.setNickName(userUpdateDTO.getNickName());
+        user.setSex(userUpdateDTO.getSex());
+        user.setSchoolName(userUpdateDTO.getSchoolName());
+        user.setMajorName(userUpdateDTO.getMajorName());
+        user.setPhone(userUpdateDTO.getPhone());
+        user.setEmail(userUpdateDTO.getEmail());
+        user.setWechat(userUpdateDTO.getWechat());
+        user.setIntroduce(userUpdateDTO.getIntroduce());
+
+        // 更新用户缓存
+        userCacheManager.refreshUser(user);
+        tokenService.refreshLoginUser(user.getNickName(), user.getHeadImage(), ThreadLocalUtil.get(Constants.USER_KEY, String.class));
+        return userMapper.updateById(user);
+    }
+
+    @Override
+    public int updateHeadImage(String headImage) {
+        Long userId = ThreadLocalUtil.get(Constants.USER_ID, Long.class);
+        if (userId == null) {
+            throw new ServiceException(ResultCode.FAILED_USER_NOT_EXISTS);
+        }
+
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            throw new ServiceException(ResultCode.FAILED_USER_NOT_EXISTS);
+        }
+
+        user.setHeadImage(headImage);
+
+        // 更新用户缓存
+        userCacheManager.refreshUser(user);
+        tokenService.refreshLoginUser(user.getNickName(), user.getHeadImage(), ThreadLocalUtil.get(Constants.USER_KEY, String.class));
+        return userMapper.updateById(user);
     }
 
     private void checkCode(String phone, String code) {
