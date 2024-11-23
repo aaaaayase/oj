@@ -1,10 +1,7 @@
-package com.yun.job.mapper;
+package com.yun.job.mapper.exam;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.yun.job.domain.Exam;
-
-
-import java.util.List;
+import com.yun.job.domain.exam.Exam;
 
 /**
  * @author yun

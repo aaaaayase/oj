@@ -1,4 +1,4 @@
-package com.yun.job.domain;
+package com.yun.job.domain.exam;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

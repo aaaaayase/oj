@@ -4,6 +4,7 @@ import com.yun.common.core.controller.BaseController;
 import com.yun.common.core.domain.R;
 import com.yun.common.core.domain.TableDataInfo;
 import com.yun.friend.domain.exam.dto.ExamQueryDTO;
+import com.yun.friend.domain.exam.dto.ExamRankDTO;
 import com.yun.friend.service.exam.IExamService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -40,6 +41,14 @@ public class ExamController extends BaseController {
     @ApiResponse(responseCode = "2000", description = "服务器繁忙请稍后重试")
     public TableDataInfo redisList(ExamQueryDTO examQueryDTO) {
         return examService.redisList(examQueryDTO);
+    }
+
+    @GetMapping("/rank/list")
+    @Operation(summary = "获取竞赛排名列表", description = "获取竞赛排名列表")
+    @ApiResponse(responseCode = "1000", description = "操作成功")
+    @ApiResponse(responseCode = "2000", description = "服务器繁忙请稍后重试")
+    public TableDataInfo rankList(ExamRankDTO examRankDTO) {
+        return examService.rankList(examRankDTO);
     }
 
     @GetMapping("/getFirstQuestion")

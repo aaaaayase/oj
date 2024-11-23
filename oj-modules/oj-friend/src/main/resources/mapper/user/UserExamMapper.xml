@@ -20,5 +20,14 @@
         order by
             ue.create_time desc
     </select>
+    <select id="selectExamRankList" resultType="com.yun.friend.domain.exam.vo.ExamRankVO">
+        select user_id,
+               score,
+               exam_rank
+        from tb_user_exam
+        where exam_id = #{examId}
+        order by exam_rank
+
+    </select>
 
 </mapper>

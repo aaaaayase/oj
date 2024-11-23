@@ -2,6 +2,7 @@ package com.yun.friend.service.exam;
 
 import com.yun.common.core.domain.TableDataInfo;
 import com.yun.friend.domain.exam.dto.ExamQueryDTO;
+import com.yun.friend.domain.exam.dto.ExamRankDTO;
 import com.yun.friend.domain.exam.vo.ExamVO;
 
 import java.util.List;
@@ -16,9 +17,12 @@ public interface IExamService {
 
     TableDataInfo redisList(ExamQueryDTO examQueryDTO);
 
+    TableDataInfo rankList(ExamRankDTO examRankDTO);
+
     String getFirstQuestion(Long examId);
 
     String preQuestion(Long examId, Long questionId);
 
     String nextQuestion(Long examId, Long questionId);
+
 }

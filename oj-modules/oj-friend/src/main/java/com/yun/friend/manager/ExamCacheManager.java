@@ -14,6 +14,8 @@ import com.yun.common.security.exception.ServiceException;
 import com.yun.friend.domain.exam.Exam;
 import com.yun.friend.domain.exam.ExamQuestion;
 import com.yun.friend.domain.exam.dto.ExamQueryDTO;
+import com.yun.friend.domain.exam.dto.ExamRankDTO;
+import com.yun.friend.domain.exam.vo.ExamRankVO;
 import com.yun.friend.domain.exam.vo.ExamVO;
 import com.yun.friend.domain.user.UserExam;
 import com.yun.friend.mapper.exam.IExamMapper;
@@ -56,6 +58,10 @@ public class ExamCacheManager {
         return redisService.getListSize(examQuestionListKey);
     }
 
+    public Long getRankListSize(Long examId) {
+        return redisService.getListSize(getExamRankListKey(examId));
+    }
+
     public List<Long> getAllUserExamList(Long userId) {
         String examListKey = CacheConstants.USER_EXAM_LIST + userId;
         List<Long> userExamIdList = redisService.getCacheListByRange(examListKey, 0, -1, Long.class);
@@ -84,6 +90,13 @@ public class ExamCacheManager {
             refreshCache(examQueryDTO.getType(), userId);
         }
         return examVOList;
+    }
+
+
+    public List<ExamRankVO> getExamRankList(ExamRankDTO examRankDTO) {
+        int start = (examRankDTO.getPageNum() - 1) * examRankDTO.getPageSize();
+        int end = start + examRankDTO.getPageSize() - 1; //下标需要 -1
+        return redisService.getCacheListByRange(getExamRankListKey(examRankDTO.getExamId()), start, end, ExamRankVO.class);
     }
 
     private List<ExamVO> getExamListByDB(ExamQueryDTO examQueryDTO, Long userId) {
@@ -124,6 +137,14 @@ public class ExamCacheManager {
         }
 
         return redisService.indexForList(getExamQuestionListKey(examId), index + 1, Long.class);
+    }
+
+    public void refreshExamRankCache(Long examId) {
+        List<ExamRankVO> examRankVOList = userExamMapper.selectExamRankList(examId);
+        if (CollectionUtil.isEmpty(examRankVOList)) {
+            return;
+        }
+        redisService.rightPushAll(getExamRankListKey(examId), examRankVOList);
     }
 
     public void refreshExamQuestionCache(Long examId) {
@@ -220,5 +241,10 @@ public class ExamCacheManager {
     private String getExamQuestionListKey(Long examId) {
         return CacheConstants.EXAM_QUESTION_lIST + examId;
     }
+
+    private String getExamRankListKey(Long examId) {
+        return CacheConstants.EXAM_RANK_LIST + examId;
+    }
+
 
 }
