@@ -64,8 +64,7 @@ public class RedisService {
      * @param unit    时间单位
      * @return true=设置成功；false=设置失败
      */
-    public boolean expire(final String key, final long timeout, final TimeUnit
-            unit) {
+    public boolean expire(final String key, final long timeout, final TimeUnit unit) {
         return redisTemplate.expire(key, timeout, unit);
     }
 
@@ -97,8 +96,7 @@ public class RedisService {
      * @param value   缓存的值
      * @param timeout 时间
      */
-    public <T> void setCacheObject(final String key, final T value, final Long
-            timeout, final TimeUnit timeUnit) {
+    public <T> void setCacheObject(final String key, final T value, final Long timeout, final TimeUnit timeUnit) {
         redisTemplate.opsForValue().set(key, value, timeout, timeUnit);
     }
 
@@ -165,8 +163,7 @@ public class RedisService {
      * @param <T>
      * @return
      */
-    public <T> List<T> getCacheListByRange(final String key, long start, long
-            end, Class<T> clazz) {
+    public <T> List<T> getCacheListByRange(final String key, long start, long end, Class<T> clazz) {
         List range = redisTemplate.opsForList().range(key, start, end);
         if (CollectionUtils.isEmpty(range)) {
             return null;
@@ -205,8 +202,7 @@ public class RedisService {
     }
 
     //************************ 操作Hash类型 ***************************
-    public <T> T getCacheMapValue(final String key, final String hKey,
-                                  Class<T> clazz) {
+    public <T> T getCacheMapValue(final String key, final String hKey, Class<T> clazz) {
         Object cacheMapValue = redisTemplate.opsForHash().get(key, hKey);
         if (cacheMapValue != null) {
             return JSON.parseObject(String.valueOf(cacheMapValue), clazz);
@@ -223,8 +219,7 @@ public class RedisService {
      * @param <T>   泛型
      * @return Hash对象集合
      */
-    public <T> List<T> getMultiCacheMapValue(final String key, final
-    Collection<String> hKeys, Class<T> clazz) {
+    public <T> List<T> getMultiCacheMapValue(final String key, final Collection<String> hKeys, Class<T> clazz) {
         List list = redisTemplate.opsForHash().multiGet(key, hKeys);
         List<T> result = new ArrayList<>();
         for (Object item : list) {
@@ -240,8 +235,7 @@ public class RedisService {
      * @param hKey  Hash键
      * @param value 值
      */
-    public <T> void setCacheMapValue(final String key, final String hKey, final
-    T value) {
+    public <T> void setCacheMapValue(final String key, final String hKey, final T value) {
         redisTemplate.opsForHash().put(key, hKey, value);
     }
 

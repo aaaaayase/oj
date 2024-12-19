@@ -105,6 +105,7 @@ public class SysUserServiceImpl implements ISysUserService {
         SysUser sysUser = new SysUser();
         sysUser.setUserAccount(saveDTO.getUserAccount());
         sysUser.setPassword(BCryptUtils.encryptPassword(saveDTO.getPassword()));
+        sysUser.setNickName(saveDTO.getNickname());
         return sysUserMapper.insert(sysUser);
     }
 

@@ -28,6 +28,7 @@ public class TokenService {
     @Autowired
     private RedisService redisService;
 
+    // 创建token并且将登录对象的信息存储到redis中
     public String createToken(Long userId, String secret, Integer identity, String nickName, String headImage) {
         // 生成token
         Map<String, Object> claims = new HashMap<>();

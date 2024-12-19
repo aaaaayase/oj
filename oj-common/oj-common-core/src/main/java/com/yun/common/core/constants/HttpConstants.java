@@ -5,7 +5,7 @@ package com.yun.common.core.constants;
  * @date 2024/10/28 20:26
  * @desciption: http常量
  */
-public class HttpConstants {
+public class   HttpConstants {
     /**
      * 服务端url标识
      */

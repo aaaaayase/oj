@@ -69,8 +69,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BindException.class)
     public R<?> handleBindException(BindException e) {
         log.error(e.getMessage());
-        String message = join(e.getAllErrors(),
-                DefaultMessageSourceResolvable::getDefaultMessage, ", ");
+        String message = join(e.getAllErrors(), DefaultMessageSourceResolvable::getDefaultMessage, ", ");
         return R.fail(ResultCode.FAILED_PARAMS_VALIDATE.getCode(), message);
     }
     private <E> String join(Collection<E> collection, Function<E, String> function, CharSequence delimiter) {
