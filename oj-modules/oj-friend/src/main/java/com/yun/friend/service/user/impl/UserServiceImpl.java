@@ -94,12 +94,14 @@ public class UserServiceImpl implements IUserService {
             throw new ServiceException(ResultCode.FAILED_TIME_LIMIT);
         }
 
-        String code = turnon ? "123456" : RandomUtil.randomNumbers(6);
+        String code = turnon ? Constants.DEFAULT_CODE : RandomUtil.randomNumbers(6);
         // code存储到redis key为p:c:+手机号
         redisService.setCacheObject(phoneCodeKey, code, phoneCodeExpiration, TimeUnit.MINUTES);
-        boolean sendMobileCode = aliSmsService.sendMobileCode(userDTO.getPhone(), code);
-        if (!sendMobileCode) {
-            throw new ServiceException(ResultCode.FAILED_SEND_CODE);
+        if (!turnon) {
+            boolean sendMobileCode = aliSmsService.sendMobileCode(userDTO.getPhone(), code);
+            if (!sendMobileCode) {
+                throw new ServiceException(ResultCode.FAILED_SEND_CODE);
+            }
         }
         redisService.increment(codeTimeKey);
         if (sendTimes == null) {
