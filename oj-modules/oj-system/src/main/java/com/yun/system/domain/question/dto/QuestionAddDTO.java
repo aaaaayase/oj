@@ -30,10 +30,11 @@ public class QuestionAddDTO extends BaseEntity {
     @NotNull(message = "内容不能为空")
     private String content;
 
-    @NotNull(message = "用例不能为空")
     private String questionCase;
 
+    @NotNull(message = "默认代码块不能为空")
     private String defaultCode;
 
+    @NotNull(message = "主函数不能为空")
     private String mainFuc;
 }

@@ -78,7 +78,7 @@ CREATE TABLE `tb_user`
     `update_by`   bigint(8) unsigned DEFAULT NULL COMMENT '更新人',
     `update_time` datetime    DEFAULT NULL COMMENT '更新时间',
     PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='客户端⽤⼾表'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='客户端⽤⼾表';
 -- 竞赛表
 CREATE TABLE `tb_exam`
 (
@@ -92,7 +92,7 @@ CREATE TABLE `tb_exam`
     `update_by`   BIGINT UNSIGNED COMMENT '更新人',
     `update_time` DATETIME COMMENT '更新时间',
     PRIMARY KEY (`exam_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='竞赛表'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='竞赛表';
 -- 竞赛与题目一对多关系
 CREATE TABLE `tb_exam_question`
 (
@@ -105,7 +105,7 @@ CREATE TABLE `tb_exam_question`
     `update_by`        BIGINT UNSIGNED COMMENT '更新人',
     `update_time`      DATETIME COMMENT '更新时间',
     PRIMARY KEY (`exam_question_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='竞赛题目关系表'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='竞赛题目关系表';
 -- 题目表
 CREATE TABLE `tb_question`
 (
@@ -123,7 +123,7 @@ CREATE TABLE `tb_question`
     `update_by`     BIGINT UNSIGNED COMMENT '更新人',
     `update_time`   DATETIME COMMENT '更新时间',
     PRIMARY KEY (`question_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='题目表'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='题目表';
 -- 管理端用户表
 DROP TABLE IF EXISTS `tb_sys_user`;
 CREATE TABLE `tb_sys_user`
@@ -138,4 +138,4 @@ CREATE TABLE `tb_sys_user`
     `update_time`  datetime     DEFAULT NULL COMMENT '更新时间',
     PRIMARY KEY (`user_id`),
     UNIQUE KEY `user_account` (`user_account`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='管理端⽤⼾表'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='管理端⽤⼾表';
