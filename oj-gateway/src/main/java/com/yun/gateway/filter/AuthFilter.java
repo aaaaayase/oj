@@ -52,6 +52,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
+        // 去掉域名以及查询字符串部分
         String url = request.getURI().getPath();
         // 跳过不需要验证的路径 接口白名单中的所有接口都不需要身份验证 即后续代码不需要去执行
         if (matches(url, ignoreWhite.getWhites())) { // 拿到nacos配置上的接口白名单

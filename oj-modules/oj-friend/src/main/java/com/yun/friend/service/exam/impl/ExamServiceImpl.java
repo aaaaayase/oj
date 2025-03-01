@@ -19,7 +19,9 @@ import com.yun.friend.service.exam.IExamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author yun
@@ -60,10 +62,18 @@ public class ExamServiceImpl implements IExamService {
         } else {
             examVOList = examCacheManager.getExamVOList(examQueryDTO, null);
             total = examCacheManager.getListSize(examQueryDTO.getType(), null);
+            if (examQueryDTO.getEndTime() != null && examQueryDTO.getStartTime() != null) {
+                examVOList = examVOList.stream()
+                        .filter(examVO -> examVO.getStartTime().isAfter(examQueryDTO.getStartTime()) &&
+                                examVO.getEndTime().isBefore(examQueryDTO.getEndTime()))
+                        .collect(Collectors.toList());
+            }
+
         }
         if (CollectionUtil.isEmpty(examVOList)) {
             return TableDataInfo.empty();
         }
+        // 这个函数是将对应类型的竞赛列表数据如果用户报名了就会设置为已报名 当然这只会在登录状态下发送
         assembleExamVOList(examVOList);
         return TableDataInfo.success(examVOList, total);
     }

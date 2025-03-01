@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yun.friend.mapper.message.IMessageTextMapper">
     <select id="selectUserMsgList" resultType="com.yun.friend.domain.message.vo.MessageTextVO">
-        select t.message_id,
+        select t.text_id,
                t.message_title,
                t.message_content
         from tb_message m

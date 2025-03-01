@@ -156,6 +156,8 @@ public class ExamServiceImpl extends ServiceImpl<IExamQuestionMapper, ExamQuesti
         if (exam.getEndTime().isBefore(LocalDateTime.now())) {
             throw new ServiceException(ResultCode.EXAM_IS_FINISH);
         }
+        // 保证此时竞赛处于未开赛状态
+        checkExam(exam);
         Long count = examQuestionMapper.selectCount(new LambdaQueryWrapper<ExamQuestion>().eq(ExamQuestion::getExamId, examId));
         if (count == null || count <= 0) {
             throw new ServiceException(ResultCode.EXAM_NOT_HAS_QUESTION);

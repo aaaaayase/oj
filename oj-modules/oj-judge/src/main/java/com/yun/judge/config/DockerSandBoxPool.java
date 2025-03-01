@@ -79,6 +79,8 @@ public class DockerSandBoxPool {
         containerQueue.add(containerId);
     }
 
+    // 首先通过客户端来获取容器
+    // 如果要创建的容器在容器列表中已经包含了 那么就直接启动 并将其容器id加入阻塞队列 将其id name键值对加入hashmap
     private void createContainer(String containerName) {
         List<Container> containerList = dockerClient.listContainersCmd().withShowAll(true).exec();
         if (!CollectionUtil.isEmpty(containerList)) {
@@ -101,9 +103,11 @@ public class DockerSandBoxPool {
         pullJavaEnvImage();
         //创建容器  限制资源   控制权限
         HostConfig hostConfig = getHostConfig(containerName);
+        // 创建一个容器
         CreateContainerCmd containerCmd = dockerClient
                 .createContainerCmd(JudgeConstants.JAVA_ENV_IMAGE)
                 .withName(containerName);
+        // 配置运行环境
         CreateContainerResponse createContainerResponse = containerCmd
                 .withHostConfig(hostConfig)
                 .withAttachStderr(true)
@@ -119,23 +123,27 @@ public class DockerSandBoxPool {
     }
 
     private void pullJavaEnvImage() {
+        // 首先列出本地镜像
         ListImagesCmd listImagesCmd = dockerClient.listImagesCmd();
         List<Image> imageList = listImagesCmd.exec();
+        // 如果本地镜像中包含要的镜像 则直接返回
         for (Image image : imageList) {
             String[] repoTags = image.getRepoTags();
             if (repoTags != null && repoTags.length > 0 && sandboxImage.equals(repoTags[0])) {
                 return;
             }
         }
+        // 从远程仓库中拉取镜像
         PullImageCmd pullImageCmd = dockerClient.pullImageCmd(sandboxImage);
         try {
+            // 等待拉取完成
             pullImageCmd.exec(new PullImageResultCallback()).awaitCompletion();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
-    //限制资源   控制权限
+    //定义docker容器即代码沙箱运行时的配置
     private HostConfig getHostConfig(String containerName) {
         HostConfig hostConfig = new HostConfig();
         //设置挂载目录，指定用户代码路径

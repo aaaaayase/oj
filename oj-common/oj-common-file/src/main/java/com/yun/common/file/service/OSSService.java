@@ -55,10 +55,12 @@ public class OSSService {
 
     public OSSResult uploadFile(MultipartFile file) throws Exception {
         if (!test) {
+            // 检查头像上传次数
             checkUploadCount();
         }
         InputStream inputStream = null;
         try {
+            // 修改文件名
             String fileName;
             if (file.getOriginalFilename() != null) {
                 fileName = file.getOriginalFilename().toLowerCase();
@@ -67,6 +69,7 @@ public class OSSService {
             }
             String extName = fileName.substring(fileName.lastIndexOf(".") + 1);
             inputStream = file.getInputStream();
+            // 将文件通过流的方式上传 指定bucket
             return upload(extName, inputStream);
         } catch (Exception e) {
             log.error("OSS upload file error", e);
@@ -78,11 +81,10 @@ public class OSSService {
         }
     }
 
+    // 检查头像上传次数 超过则抛异常反之次数加一 第一次上传则设置该键值对的ttl为一天
     private void checkUploadCount() {
         Long userId = ThreadLocalUtil.get(Constants.USER_ID, Long.class);
-        Long times =
-                redisService.getCacheMapValue(CacheConstants.USER_UPLOAD_TIMES_KEY,
-                        String.valueOf(userId), Long.class);
+        Long times = redisService.getCacheMapValue(CacheConstants.USER_UPLOAD_TIMES_KEY, String.valueOf(userId), Long.class);
         if (times != null && times >= maxTime) {
             throw new ServiceException(ResultCode.FAILED_FILE_UPLOAD_TIME_LIMIT);
         }

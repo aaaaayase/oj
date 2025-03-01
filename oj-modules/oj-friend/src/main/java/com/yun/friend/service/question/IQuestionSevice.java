@@ -4,6 +4,9 @@ import com.yun.common.core.domain.R;
 import com.yun.common.core.domain.TableDataInfo;
 import com.yun.friend.domain.question.dto.QuestionQueryDTO;
 import com.yun.friend.domain.question.vo.QuestionDetailVO;
+import com.yun.friend.domain.question.vo.QuestionVO;
+
+import java.util.List;
 
 /**
  * @author yun
@@ -18,4 +21,6 @@ public interface IQuestionSevice {
     String preQuestion(Long questionId);
 
     String nextQuestion(Long questionId);
+
+    List<QuestionVO> hotList();
 }

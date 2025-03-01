@@ -28,12 +28,13 @@ public class OSSConfig {
 
     @Bean
     public OSS ossClient() throws ClientException {
+        // 凭证提供 阿里云的认证信息
         DefaultCredentialProvider credentialsProvider =
                 CredentialsProviderFactory.newDefaultCredentialProvider(prop.getAccessKeyId(), prop.getAccessKeySecret());
         // 创建ClientBuilderConfiguration
         ClientBuilderConfiguration clientBuilderConfiguration = new ClientBuilderConfiguration();
         clientBuilderConfiguration.setSignatureVersion(SignVersion.V4);
-        // 使⽤内⽹endpoint进⾏上传
+        // 使⽤内⽹endpoint进⾏上传 构建客户端
         ossClient = OSSClientBuilder.create()
                 .endpoint(prop.getEndpoint())
                 .credentialsProvider(credentialsProvider)

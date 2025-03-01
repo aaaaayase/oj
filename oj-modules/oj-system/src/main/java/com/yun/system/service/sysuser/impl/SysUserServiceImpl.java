@@ -46,7 +46,6 @@ public class SysUserServiceImpl implements ISysUserService {
         // 1.通过账号去查询数据库中的信息
         LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
         SysUser sysUser = sysUserMapper.selectOne(queryWrapper.select(SysUser::getUserId, SysUser::getPassword, SysUser::getNickName).eq(SysUser::getUserAccount, userAccount));
-        R loginResult = new R();
         if (sysUser == null) {
 //            loginResult.setMsg(ResultCode.FAILED_USER_NOT_EXISTS.getMsg());
 //            loginResult.setCode(ResultCode.FAILED_USER_NOT_EXISTS.getCode());

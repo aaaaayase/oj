@@ -91,6 +91,7 @@ public class ExamXxlJob {
         }
 
         Set<Long> examIdSet = examList.stream().map(Exam::getExamId).collect(Collectors.toSet());
+        // 把每个人的竞赛得分都算了一边
         List<UserScore> userScoreList = userSubmitMapper.selectUserScoreList(examIdSet);
         Map<Long, List<UserScore>> userScoreMap = userScoreList.stream().collect(Collectors.groupingBy(UserScore::getExamId));
         createMessage(examList, userScoreMap);

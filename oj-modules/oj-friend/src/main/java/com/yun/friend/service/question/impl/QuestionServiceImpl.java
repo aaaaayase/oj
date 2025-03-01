@@ -4,7 +4,8 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.yun.common.core.domain.R;
+import com.github.pagehelper.PageHelper;
+import com.yun.common.core.constants.Constants;
 import com.yun.common.core.domain.TableDataInfo;
 import com.yun.friend.domain.question.Question;
 import com.yun.friend.domain.question.dto.QuestionQueryDTO;
@@ -14,15 +15,17 @@ import com.yun.friend.domain.question.vo.QuestionVO;
 import com.yun.friend.elasticsearch.QuestionRepository;
 import com.yun.friend.manager.QuestionCacheManager;
 import com.yun.friend.mapper.question.IQuestionMapper;
+import com.yun.friend.mapper.user.IUserSubmitMapper;
 import com.yun.friend.service.question.IQuestionSevice;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,6 +44,9 @@ public class QuestionServiceImpl implements IQuestionSevice {
 
     @Autowired
     private QuestionCacheManager questionCacheManager;
+
+    @Autowired
+    private IUserSubmitMapper userSubmitMapper;
 
     @Override
     public TableDataInfo list(QuestionQueryDTO questionQueryDTO) {
@@ -75,6 +81,20 @@ public class QuestionServiceImpl implements IQuestionSevice {
     }
 
     @Override
+    public List<QuestionVO> hotList() {
+        Long total = questionCacheManager.getHostListSize();
+        List<Long> hotQuestionIdList;
+        if (total == null || total <= 0) {
+            PageHelper.startPage(Constants.HOST_QUESTION_LIST_START, Constants.HOST_QUESTION_LIST_END);
+            hotQuestionIdList = userSubmitMapper.selectHostQuestionList();
+            questionCacheManager.refreshHotQuestionList(hotQuestionIdList);
+        } else {
+            hotQuestionIdList = questionCacheManager.getHostList();
+        }
+        return assembleQuestionVOList(hotQuestionIdList);
+    }
+
+    @Override
     public QuestionDetailVO detail(Long questionId) {
         QuestionES questionES = questionRepository.findById(questionId).orElse(null);
         QuestionDetailVO questionDetailVO = new QuestionDetailVO();
@@ -98,7 +118,7 @@ public class QuestionServiceImpl implements IQuestionSevice {
             questionCacheManager.refreshCache();
         }
 
-       return questionCacheManager.preQuestion(questionId).toString();
+        return questionCacheManager.preQuestion(questionId).toString();
     }
 
     @Override
@@ -118,5 +138,19 @@ public class QuestionServiceImpl implements IQuestionSevice {
         }
         List<QuestionES> questionESList = BeanUtil.copyToList(questionList, QuestionES.class);
         questionRepository.saveAll(questionESList);
+    }
+
+    private List<QuestionVO> assembleQuestionVOList(List<Long> hotQuestionIdList) {
+        if (CollectionUtil.isEmpty(hotQuestionIdList)) {
+            return new ArrayList<>();
+        }
+        List<QuestionVO> resultList = new ArrayList<>();
+        for (Long questionId : hotQuestionIdList) {
+            QuestionVO questionVO = new QuestionVO();
+            QuestionDetailVO detail = detail(questionId);
+            questionVO.setTitle(detail.getTitle());
+            resultList.add(questionVO);
+        }
+        return resultList;
     }
 }

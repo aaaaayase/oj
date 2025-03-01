@@ -1,5 +1,6 @@
 package com.yun.system.domain.exam.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.yun.common.core.domain.dto.PageQueryDTO;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

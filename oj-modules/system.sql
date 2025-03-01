@@ -9,7 +9,7 @@ create table tb_message_text
     `update_by`     bigint(8) unsigned DEFAULT NULL COMMENT '更新人',
     `update_time`   datetime DEFAULT NULL COMMENT '更新时间',
     primary key (text_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息内容表'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息内容表';
 
 -- 消息表
 create table tb_message
@@ -23,7 +23,7 @@ create table tb_message
     `update_by`   bigint(8) unsigned DEFAULT NULL COMMENT '更新人',
     `update_time` datetime DEFAULT NULL COMMENT '更新时间',
     primary key (message_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息表'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息表';
 
 -- 用户答题提交表
 create table tb_user_submit
@@ -42,7 +42,7 @@ create table tb_user_submit
     `update_by`   bigint(8) unsigned DEFAULT NULL COMMENT '更新人',
     `update_time` datetime              DEFAULT NULL COMMENT '更新时间',
     primary key (submit_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户答题提交表'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户答题提交表';
 
 -- 客户端用户与竞赛关系表 竞赛报名
 create table tb_user_exam
@@ -57,7 +57,7 @@ create table tb_user_exam
     `update_by`   bigint(8) unsigned DEFAULT NULL COMMENT '更新人',
     `update_time` datetime DEFAULT NULL COMMENT '更新时间',
     primary key (user_exam_id)
-)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='竞赛报名表';
 -- 客户端用户表
 CREATE TABLE `tb_user`
 (

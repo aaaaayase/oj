@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: oj-system
+  profiles:
+    active: local
+  cloud:
+    nacos:
+      discovery:
+        namespace: 0471afd5-c899-4aab-8431-a470b458fd3b
+        server-addr: http://172.29.228.147:8848
+        username: nacos
+        password: Dcy20010712
+        ip: ${HOST_IP}
+      config:
+        namespace: 0471afd5-c899-4aab-8431-a470b458fd3b
+        server-addr: http://172.29.228.147:8848
+        file-extension: yaml
+        username: nacos
+        password: Dcy20010712

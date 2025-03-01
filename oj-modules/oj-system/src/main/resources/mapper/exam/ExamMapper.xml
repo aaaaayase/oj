@@ -20,10 +20,10 @@
             <if test="title != null and title != '' ">
                 and te.title LIKE CONCAT('%',#{title},'%')
             </if>
-            <if test="startTime != null and startTime != '' ">
+            <if test="startTime != null">
                 and te.start_time >= #{startTime}
             </if>
-            <if test="endTime != null and endTime != '' ">
+            <if test="endTime != null">
                 and te.end_time &lt;= #{endTime}
             </if>
         </where>

@@ -67,32 +67,4 @@ public class SysUserController extends BaseController {
         return toR(sysUserService.add(saveDTO));
     }
 
-    @DeleteMapping("/{userId}")
-    @Operation(summary = "删除⽤⼾", description = "通过⽤⼾id删除⽤⼾")
-    @Parameters(value = {
-            @Parameter(name = "userId", in = ParameterIn.PATH, description = "⽤⼾ID")
-    })
-    @ApiResponse(responseCode = "1000", description = "成功删除⽤⼾")
-    @ApiResponse(responseCode = "2000", description = "服务繁忙请稍后重试")
-    @ApiResponse(responseCode = "3101", description = "⽤⼾不存在")
-    public R<Void> delete(@PathVariable Long userId) {
-        return null;
-    }
-
-    //修改我就不演⽰了和新增差不多
-
-    @Operation(summary = "⽤⼾详情", description = "根据查询条件查询⽤⼾详情")
-    @GetMapping("/detail")
-    @Parameters(value = {
-            @Parameter(name = "userId", in = ParameterIn.QUERY, description = "⽤⼾ID"),
-            @Parameter(name = "sex", in = ParameterIn.QUERY, description = "⽤⼾性别")
-    })
-    @ApiResponse(responseCode = "1000", description = "成功获取⽤⼾信息")
-    @ApiResponse(responseCode = "2000", description = "服务繁忙请稍后重试")
-    @ApiResponse(responseCode = "3101", description = "⽤⼾不存在")
-    public R<SysUserVO> detail(Long userId, @RequestParam(required = false) String sex) {
-        return null;
-    }
-
-
 }

@@ -40,6 +40,8 @@ public class DockerSandBoxPoolConfig {
     @Value("${sandbox.docker.name-prefix:oj-sandbox-jdk}")
     private String containerNamePrefix;
 
+
+    // docker客户端
     @Bean
     public DockerClient createDockerClient() {
         DefaultDockerClientConfig clientConfig = DefaultDockerClientConfig.createDefaultConfigBuilder()
@@ -51,6 +53,7 @@ public class DockerSandBoxPoolConfig {
                 .build();
     }
 
+    // 创建代码沙箱容器池
     @Bean
     public DockerSandBoxPool createDockerSandBoxPool(DockerClient dockerClient) {
         DockerSandBoxPool dockerSandBoxPool = new DockerSandBoxPool(dockerClient, sandboxImage, volumeDir, memoryLimit,

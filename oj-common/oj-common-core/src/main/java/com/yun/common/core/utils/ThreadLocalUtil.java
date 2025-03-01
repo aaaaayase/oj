@@ -3,7 +3,7 @@ package com.yun.common.core.utils;
 /**
  * @author yun
  * @date 2024/11/17 10:50
- * @desciption:
+ * @desciption: ThreadLocal保存登录进来的userId
  */
 
 import cn.hutool.core.util.StrUtil;
@@ -13,8 +13,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ThreadLocalUtil {
-    private static final TransmittableThreadLocal<Map<String, Object>>
-            THREAD_LOCAL = new TransmittableThreadLocal<>();
+    private static final TransmittableThreadLocal<Map<String, Object>> THREAD_LOCAL = new TransmittableThreadLocal<>();
 
     public static void set(String key, Object value) {
         Map<String, Object> map = getLocalMap();

@@ -28,7 +28,7 @@ public class SysUserSaveDTO {
     @NotEmpty
     private String password;
 
-    @Schema(description = "用户密码")
+    @Schema(description = "用户昵称")
     @NotNull
     @NotBlank
     @NotEmpty

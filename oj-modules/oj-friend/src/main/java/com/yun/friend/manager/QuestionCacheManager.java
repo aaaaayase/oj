@@ -60,4 +60,20 @@ public class QuestionCacheManager {
         return redisService.indexForList(CacheConstants.QUESTION_lIST, index + 1, Long.class);
 
     }
+
+    public Long getHostListSize() {
+        return redisService.getListSize(CacheConstants.QUESTION_HOST_LIST);
+    }
+
+    public List<Long> getHostList() {
+        return redisService.getCacheListByRange(CacheConstants.QUESTION_HOST_LIST,
+                CacheConstants.DEFAULT_START, CacheConstants.DEFAULT_END, Long.class);
+    }
+
+    public void refreshHotQuestionList(List<Long> hotQuestionIdList) {
+        if (CollectionUtil.isEmpty(hotQuestionIdList)) {
+            return;
+        }
+        redisService.rightPushAll(CacheConstants.QUESTION_HOST_LIST, hotQuestionIdList);
+    }
 }

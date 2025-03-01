@@ -52,10 +52,12 @@ public class SandBoxPoolServiceImpl implements ISandBoxPoolService {
     @Override
     public SandBoxExecuteResult exeJavaCode(Long userId, String userCode, List<String> inputList) {
         containerId = sandBoxPool.getContainer();
+        // 创建文件在挂载目录 并且将代码写入文件
         createUserCodeFile(userCode);
-        //编译代码
+        //编译代码 获取编译结果
         CompileResult compileResult = compileCodeByDocker();
         if (!compileResult.isCompiled()) {
+            // 编译失败 返回容器 删除代码文件
             sandBoxPool.returnContainer(containerId);
             deleteUserCodeFile();
             return SandBoxExecuteResult.fail(CodeRunStatus.COMPILE_FAILED, compileResult.getExeMessage());
@@ -66,6 +68,7 @@ public class SandBoxPoolServiceImpl implements ISandBoxPoolService {
 
     //创建并返回用户代码的文件
     private void createUserCodeFile(String userCode) {
+        // 拿到挂载目录
         String codeDir = sandBoxPool.getCodeDir(containerId);
         log.info("user-pool路径信息：{}", codeDir);
         userCodeFileName = codeDir + File.separator + JudgeConstants.USER_CODE_JAVA_CLASS_NAME;
@@ -73,19 +76,24 @@ public class SandBoxPoolServiceImpl implements ISandBoxPoolService {
         if (FileUtil.exist(userCodeFileName)) {
             FileUtil.del(userCodeFileName);
         }
+        // 代码写入文件
         FileUtil.writeString(userCode, userCodeFileName, Constants.UTF8);
     }
 
     //编译
     //的使用docker编译
     private CompileResult compileCodeByDocker() {
+        // 创建命令
         String cmdId = createExecCmd(JudgeConstants.DOCKER_JAVAC_CMD, null, containerId);
+        // 回调函数 记录程序输出
         DockerStartResultCallback resultCallback = new DockerStartResultCallback();
         CompileResult compileResult = new CompileResult();
         try {
+            // 执行命令
             dockerClient.execStartCmd(cmdId)
                     .exec(resultCallback)
                     .awaitCompletion();
+            // 根据回调函数判断程序是否执行成功
             if (CodeRunStatus.FAILED.equals(resultCallback.getCodeRunStatus())) {
                 compileResult.setCompiled(false);
                 compileResult.setExeMessage(resultCallback.getErrorMessage());
@@ -105,11 +113,11 @@ public class SandBoxPoolServiceImpl implements ISandBoxPoolService {
         long maxUseTime = 0L; //最大运行时间
         //执行用户代码
         for (String inputArgs : inputList) {
+            // 创建命令
             String cmdId = createExecCmd(JudgeConstants.DOCKER_JAVA_EXEC_CMD, inputArgs, containerId);
-            //执行代码
             StopWatch stopWatch = new StopWatch();        //执行代码后开始计时
             //执行情况监控
-            StatsCmd statsCmd = dockerClient.statsCmd(containerId); //启动监控
+            StatsCmd statsCmd = dockerClient.statsCmd(containerId); //启动监控 获取统计信息
             StatisticsCallback statisticsCallback = statsCmd.exec(new StatisticsCallback());
             stopWatch.start();
             DockerStartResultCallback resultCallback = new DockerStartResultCallback();
@@ -140,6 +148,7 @@ public class SandBoxPoolServiceImpl implements ISandBoxPoolService {
         return getSanBoxResult(inputList, outList, maxMemory, maxUseTime); //封装结果
     }
 
+    // 创建命令
     private String createExecCmd(String[] javaCmdArr, String inputArgs, String containerId) {
         if (!StrUtil.isEmpty(inputArgs)) {
             //当入参不为空时拼接入参
